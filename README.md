@@ -29,7 +29,7 @@ Paste this into a terminal:
 curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh
 ```
 
-It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched. Run it again any time to update. For the full Regolith look, see [Regolith Glass](#regolith-glass-optional).
+It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched. Run it again any time to update. For the full Regolith look, see [the Regolith layout](#regolith-layout-optional).
 
 ### By hand
 
@@ -62,9 +62,9 @@ Prefer the command line? This sets the theme for the layout you're in:
 herdr-app do app.theme --name regolith
 ```
 
-## Regolith Glass (optional)
+## Regolith layout (optional)
 
-Themes only set colors. **Regolith Glass** is a layout that adds the rest of the Regolith look, and it works with any of the six themes:
+Themes only set colors. The **Regolith** layout adds the rest of the Regolith look, and it works with any of the six themes:
 
 - The focused pane has no red outline.
 - **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. Everywhere Herdr showed a spinning ring for a working agent (agents list, tabs, pane headers, ⌘P picker) there's a green dot that breathes instead. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
@@ -76,21 +76,21 @@ Themes only set colors. **Regolith Glass** is a layout that adds the rest of the
 Install the themes and the layout together:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --glass
+curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --full
 ```
 
-If Herdr is open, the installer switches it to Regolith Glass with the Regolith theme. Otherwise pick **Regolith Glass** under **Layout** in Settings › Look. Any of the six themes works on top of it.
+If Herdr is open, the installer switches it to the Regolith layout with the Regolith theme. Otherwise pick **Regolith** under **Layout** in Settings › Look. Any of the six themes works on top of it.
 
 The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, change `"cmd-p"` in `~/.config/herdr-app/keys.json` to `"mod.open:regolith-picker"`. The search button in the sidebar already opens it.
 
-> **Heads-up: these panels won't update on their own.** Herdr doesn't let you edit its built-in panels, so Regolith Glass uses copies of seven of them: the agents list, the spaces list, the ⌘P picker, the sidebar's top and bottom bars, the tab bar, the pane header and the Add machine dialog (`regolith-agents`, `regolith-spaces`, `regolith-picker`, `regolith-chrome`, `regolith-tabs`, `regolith-pane`, `regolith-machine-add`). Herdr updates its own panels, never copies. When Herdr improves one of those panels, you'll keep the older version until this repo is updated and you run the installer again. If a Herdr update ever breaks a copy, switch back to the **Herdr** layout; the themes keep working there.
+> **Heads-up: these panels won't update on their own.** Herdr doesn't let you edit its built-in panels, so the Regolith layout uses copies of seven of them: the agents list, the spaces list, the ⌘P picker, the sidebar's top and bottom bars, the tab bar, the pane header and the Add machine dialog (`regolith-agents`, `regolith-spaces`, `regolith-picker`, `regolith-chrome`, `regolith-tabs`, `regolith-pane`, `regolith-machine-add`). Herdr updates its own panels, never copies. When Herdr improves one of those panels, you'll keep the older version until this repo is updated and you run the installer again. If a Herdr update ever breaks a copy, switch back to the **Herdr** layout; the themes keep working there.
 
 ### Your own layout
 
 To change fonts, pane corners or gaps yourself, copy a layout first; Herdr replaces its built-in layouts every time it starts:
 
 ```sh
-herdr-app do layout.clone '{"name":"regolith-glass","as":"my-layout"}'
+herdr-app do layout.clone '{"name":"regolith","as":"my-layout"}'
 ```
 
 Then edit `~/.config/herdr-app/layouts/my-layout.json`. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-files) builds the settings for you as you turn its knobs: **root keys** go on the layout's top-level node, and **pane frame** settings go on the `main` block's `content.pane`. If the file has a mistake, Herdr keeps the last good version and writes the reason to `layout.error`. **Ctrl+Alt+Shift+Esc** always resets to the default layout.
@@ -100,8 +100,8 @@ Then edit `~/.config/herdr-app/layouts/my-layout.json`. The [showcase site](http
 ```sh
 cd ~/.config/herdr-app
 rm themes/regolith.json themes/regolith-dust.json themes/regolith-orbit.json themes/regolith-moss.json themes/mono.json themes/paper-cobalt.json
-# if you installed Regolith Glass, switch to another layout first, then:
-rm layouts/regolith-glass.json
+# if you installed the Regolith layout, switch to another layout first, then:
+rm layouts/regolith.json
 rm -r mods/regolith-agents mods/regolith-spaces mods/regolith-picker mods/regolith-chrome mods/regolith-tabs mods/regolith-pane mods/regolith-machine-add
 ```
 

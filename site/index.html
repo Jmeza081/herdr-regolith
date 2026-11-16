@@ -276,7 +276,7 @@ body.dock-look .nav-tools [data-part="look"], body.dock-theme .nav-tools [data-p
     </nav>
     <div class="nav-tools" aria-label="Preview controls">
       <div class="mini-seg" data-part="look" role="group" aria-label="What to install">
-        <button type="button" data-v="glass"><span class="long">The full look</span><span class="short">Full look</span></button>
+        <button type="button" data-v="full"><span class="long">The full look</span><span class="short">Full look</span></button>
         <button type="button" data-v="themes"><span class="long">Just the themes</span><span class="short">Themes</span></button>
       </div>
       <div class="swatches" data-part="theme" role="group" aria-label="Theme" id="swatches"></div>
@@ -299,7 +299,7 @@ body.dock-look .nav-tools [data-part="look"], body.dock-theme .nav-tools [data-p
 
       <div class="install" id="install" data-install>
         <div class="choice" role="group" aria-label="What to install">
-          <button type="button" data-v="glass" aria-pressed="true">The full look<small>Recommended</small></button>
+          <button type="button" data-v="full" aria-pressed="true">The full look<small>Recommended</small></button>
           <button type="button" data-v="themes" aria-pressed="false">Just the themes<small>Colors only</small></button>
         </div>
         <div class="cmd">
@@ -313,7 +313,7 @@ body.dock-look .nav-tools [data-part="look"], body.dock-theme .nav-tools [data-p
     </div>
 
     <div class="preview">
-      <div class="frame"><div class="win" id="win" role="img" aria-label="Herdr window in the Regolith theme with the Regolith Glass layout"></div></div>
+      <div class="frame"><div class="win" id="win" role="img" aria-label="Herdr window in the Regolith theme with the Regolith layout"></div></div>
       <div class="chips" id="chips" role="group" aria-label="Preview a theme"></div>
       <p class="preview-cap" id="cap"></p>
     </div>
@@ -325,11 +325,11 @@ body.dock-look .nav-tools [data-part="look"], body.dock-theme .nav-tools [data-p
     <div class="sec-head"><span class="eyebrow">How it works</span><h2 id="h-how">Three steps, about a minute</h2><p>Nothing to build and nothing to restart. The installer only writes into Herdr's own settings folder.</p></div>
     <ol class="steps" style="list-style:none;margin:0;padding:0">
       <li class="step"><span class="num">1</span><h3>Copy the command</h3><p>Use the button above, then paste it into a terminal and press Return.</p>
-        <div class="mini">$ curl … | sh -s -- --glass
+        <div class="mini">$ curl … | sh -s -- --full
 <span class="ok">Installed the themes</span>
-<span class="ok">Installed Regolith Glass</span></div></li>
-      <li class="step"><span class="num">2</span><h3>Herdr switches over</h3><p>If Herdr is open, it moves to the Regolith Glass layout and the Regolith theme straight away.</p>
-        <div class="mini">Switched Herdr to Regolith Glass
+<span class="ok">Installed the Regolith layout</span></div></li>
+      <li class="step"><span class="num">2</span><h3>Herdr switches over</h3><p>If Herdr is open, it moves to the Regolith layout and the Regolith theme straight away.</p>
+        <div class="mini">Switched Herdr to the Regolith layout
 with the Regolith theme.</div></li>
       <li class="step"><span class="num">3</span><h3>Pick your favorite</h3><p>Open Settings with <kbd>⌘</kbd> <kbd>,</kbd>, choose <b style="color:var(--ink)">Look</b>, and click any of the six themes. One for dark mode, one for light.</p>
         <img src="images/settings-regolith.png" alt="Herdr Settings, Look tab, with the Regolith theme picked under Dark" width="1400" height="988" loading="lazy"></li>
@@ -346,7 +346,7 @@ with the Regolith theme.</div></li>
 
 <section class="sec" id="what" aria-labelledby="h-what" style="padding-top:0">
   <div class="wrap" style="display:grid;gap:36px">
-    <div class="sec-head"><span class="eyebrow">The full look</span><h2 id="h-what">What Regolith Glass changes</h2><p>The themes set colors. The full look also reshapes a few of Herdr's panels to match.</p></div>
+    <div class="sec-head"><span class="eyebrow">The full look</span><h2 id="h-what">What the Regolith layout changes</h2><p>The themes set colors. The full look also reshapes a few of Herdr's panels to match.</p></div>
     <div class="gets">
       <div class="get"><span class="gi" data-i="uplink"></span><h3>A Remote badge</h3><p>Claude Code panes with Remote Control on get a small dish, so you know which ones your phone can reach.</p></div>
       <div class="get"><span class="gi"><span class="breath"><i></i></span></span><h3>A dot that breathes</h3><p>Working agents get a slow green pulse in place of a spinning ring, everywhere.</p></div>
@@ -366,7 +366,7 @@ with the Regolith theme.</div></li>
       <details><summary>How do I undo it?</summary><div class="ans"><p>Switch Herdr back to its own layout and a stock theme in Settings, then remove the files:</p>
 <pre>cd ~/.config/herdr-app
 rm themes/regolith*.json themes/mono.json themes/paper-cobalt.json
-rm layouts/regolith-glass.json
+rm layouts/regolith.json
 rm -r mods/regolith-*</pre></div></details>
       <details><summary>Will it keep up with Herdr updates?</summary><div class="ans"><p>The themes will. The full look uses copies of seven Herdr panels, and copies don't get Herdr's updates on their own. Run the installer again after this project updates. If an update ever breaks something, switch to Herdr's own layout; the themes keep working there.</p></div></details>
       <details><summary>Can I change the fonts or corners?</summary><div class="ans"><p>Yes. The <a href="customize.html">customizer</a> lets you turn the knobs on a live window and copy the settings for your own copy of the layout.</p></div></details>
@@ -380,7 +380,7 @@ rm -r mods/regolith-*</pre></div></details>
     <div class="sec-head"><span class="eyebrow">Ready?</span><h2 id="h-final">Give your terminals some regolith</h2></div>
     <div class="install" data-install>
       <div class="choice" role="group" aria-label="What to install">
-        <button type="button" data-v="glass" aria-pressed="true">The full look<small>Recommended</small></button>
+        <button type="button" data-v="full" aria-pressed="true">The full look<small>Recommended</small></button>
         <button type="button" data-v="themes" aria-pressed="false">Just the themes<small>Colors only</small></button>
       </div>
       <div class="cmd"><span class="prompt" aria-hidden="true">$</span><pre data-cmd tabindex="0" aria-label="Install command"></pre><button type="button" class="btn btn-red copy" data-copy>Copy</button></div>
@@ -408,7 +408,7 @@ const META = {
 };
 const BASE = "https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh";
 const CMDS = {
-  glass: { show: `curl -fsSL ${BASE} | sh -s -- --glass`, notes: ["Six themes", "Glass layout", "Undo any time"], sub: "The full look, one command" },
+  full: { show: `curl -fsSL ${BASE} | sh -s -- --full`, notes: ["Six themes", "Regolith layout", "Undo any time"], sub: "The full look, one command" },
   themes: { show: `curl -fsSL ${BASE} | sh`, notes: ["Six themes", "Colors only", "Works in any layout"], sub: "Just the themes, one command" }
 };
 const G = {
@@ -434,7 +434,7 @@ const G = {
 const svg = (n, cls = "") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${G[n]}</svg>`;
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
-let mode = "glass", theme = "regolith";
+let mode = "full", theme = "regolith";
 try { const s = JSON.parse(localStorage.getItem("herdr-regolith-site") || "{}"); if (CMDS[s.mode]) mode = s.mode; if (THEMES[s.theme]) theme = s.theme; } catch (e) {}
 const save = () => { try { localStorage.setItem("herdr-regolith-site", JSON.stringify({ mode, theme })); } catch (e) {} };
 
@@ -462,7 +462,7 @@ const spinner = `<svg class="spin" width="11" height="11" viewBox="0 0 12 12" ar
 const tile = p => `<span style="width:14px;height:14px;border-radius:4px;background:${PROG[p][0]};color:#0A0A0A;font:700 8px/14px var(--mono);text-align:center;flex:none">${PROG[p][1]}</span>`;
 
 function renderWindow() {
-  const t = THEMES[theme], w = $("#win"), full = mode === "glass";
+  const t = THEMES[theme], w = $("#win"), full = mode === "full";
   const vars = { canvas: t.canvas, chrome: t.chrome, surface: t.surface, raised: t.raised, selected: t.selected, border: t.border, input: t.input,
     foreground: t.foreground, muted: t.muted, dim: t.dim, accent: t.accent, "accent-fg": t.accent_foreground, working: t.working, background: t.background };
   Object.entries(vars).forEach(([k, v]) => w.style.setProperty("--" + k, v));
@@ -525,7 +525,7 @@ function renderWindow() {
   $$("#chips .chip, #swatches button").forEach(c => c.setAttribute("aria-pressed", c.dataset.k === theme));
   $$(".theme").forEach(c => c.classList.toggle("on", c.dataset.k === theme));
   $("#cap").textContent = full ? `${META[theme][0]} with the full look: moons, breathing dots and a calmer agents list.` : `${META[theme][0]} on Herdr's own layout. Just the colors change.`;
-  $("#win").setAttribute("aria-label", full ? `Herdr in ${META[theme][0]} with the Regolith Glass layout` : `Herdr in ${META[theme][0]} on its own layout`);
+  $("#win").setAttribute("aria-label", full ? `Herdr in ${META[theme][0]} with the Regolith layout` : `Herdr in ${META[theme][0]} on its own layout`);
 }
 
 $("#chips").innerHTML = ORDER.map(k => `<button type="button" class="chip" data-k="${k}"><span class="sw" style="background:${THEMES[k].canvas}"><i style="background:${THEMES[k].accent}"></i></span>${META[k][0]}</button>`).join("");
