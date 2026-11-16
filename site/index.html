@@ -374,7 +374,7 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
       <h3>Glass <code>root</code></h3>
       <label class="switch" for="kBlur">Window blur <span class="key" style="margin-left:auto;margin-right:8px">window_blur</span><input type="checkbox" id="kBlur"></label>
       <div class="ctl"><label for="kOp">Terminal opacity <output id="oOp"></output></label><input type="range" id="kOp" min="0.4" max="1" step="0.05" value="1"><span class="key">terminal_opacity · 0–1</span></div>
-      <p class="note">With blur on, Herdr wants a transparent <code>canvas</code> and a translucent <code>chrome</code>. The export writes those overrides for you. The red horizon here stands in for your desktop.</p>
+      <p class="note">With blur on, Herdr wants a transparent <code>canvas</code> and a translucent <code>chrome</code>. The theme files already carry both, so blur works with any of them. The red horizon here stands in for your desktop.</p>
     </div>
   </div>
 </section>
@@ -427,7 +427,8 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
         <span class="num">1</span>
         <div><b>Add the themes</b>
           <div class="cmd"><pre id="pInstall">curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh</pre><button class="copy" data-copy="pInstall">Copy</button></div>
-          <p class="note">Or download any file from the gallery and put it in <code>~/.config/herdr-app/themes/</code>. Herdr picks new themes up without a restart.</p></div>
+          <p class="note">Or download any file from the gallery and put it in <code>~/.config/herdr-app/themes/</code>. Herdr picks new themes up without a restart.</p>
+          <p class="note">For the full look, add <code>--glass</code>: <code>… | sh -s -- --glass</code> also installs the Regolith Glass layout, with blur, no focus ring and a Regolith agents list. It uses copies of four Herdr panels, which won't receive Herdr's future updates on their own; the README explains.</p></div>
       </div>
       <div class="step">
         <span class="num">2</span>
@@ -558,7 +559,6 @@ function render() {
   const root = { theme: name };
   if (state.blur) {
     root.window_blur = true;
-    root.colors = { canvas: t.canvas + "00", chrome: t.chrome + "8C" };
   }
   Object.assign(root, { font: state.font, font_size: +state.size, font_weight: +state.weight, ui_font: "Space Grotesk",
     terminal_line_height: +(+state.lh).toFixed(2), terminal_padding: [+state.pad, Math.round(state.pad * 0.85)] });
@@ -632,6 +632,8 @@ async function boot() {
       RAW[m.slug] = text.trimEnd();
       THEMES[m.slug] = Object.assign({ name: m.name, tag: m.tag, background: j.background, foreground: j.foreground,
         selection: j.selection, cursor: j.cursor || j.foreground, ansi: j.ansi }, j.colors);
+      // The files carry glass alpha on canvas and chrome; the preview draws the solid color.
+      for (const k of Object.keys(THEMES[m.slug])) { const v = THEMES[m.slug][k]; if (typeof v === "string" && /^#[0-9a-f]{8}$/i.test(v)) THEMES[m.slug][k] = v.slice(0, 7); }
     }));
   } catch (e) {
     $("loadError").hidden = false; return;

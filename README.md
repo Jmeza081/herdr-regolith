@@ -29,7 +29,7 @@ Paste this into a terminal:
 curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh
 ```
 
-It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched. Run it again any time to update.
+It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched. Run it again any time to update. For the full Regolith look, see [Regolith Glass](#regolith-glass-optional).
 
 ### By hand
 
@@ -62,25 +62,45 @@ Prefer the command line? This sets the theme for the layout you're in:
 herdr-app do app.theme --name regolith
 ```
 
-## Go further: fonts, frames and glass (optional)
+## Regolith Glass (optional)
 
-A theme only sets colors. A layout file can also change the terminal font, line height, pane corners, gaps, the pane header and window blur. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-files) builds these settings for you as you turn its knobs. Copy them into `~/.config/herdr-app/layouts/main.json`:
+Themes only set colors. **Regolith Glass** is a layout that adds the rest of the Regolith look, and it works with any of the six themes:
 
-- **Root keys** go on the layout's top-level node, for example:
+- The window blurs your desktop behind the sidebar and the space around the panes. Terminals are 80% opaque.
+- The focused pane has no red outline.
+- **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. A working agent shows a green dot that breathes instead of a spinning ring. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
+- **Space icons** take the theme's own colors, in the sidebar and in the ⌘P picker.
 
-  ```json
-  { "theme": "regolith", "font": "JetBrains Mono", "font_size": 13, "terminal_line_height": 1.35, "terminal_padding": [14, 12] }
-  ```
+Install the themes and the layout together:
 
-- **Pane frame** settings go on the `main` block's `content.pane`.
+```sh
+curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --glass
+```
 
-Back up `main.json` first. If the file has a mistake, Herdr keeps the last good version and writes the reason to `layout.error`. **Ctrl+Alt+Shift+Esc** always resets to the default layout.
+Then pick **Regolith Glass** under **Layout** in Settings › Look, or run `herdr-app do layout.switch --name regolith-glass`.
+
+The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, change `"cmd-p"` in `~/.config/herdr-app/keys.json` to `"mod.open:regolith-picker"`. The search button in the sidebar already opens it.
+
+> **Heads-up: these panels won't update on their own.** Herdr doesn't let you edit its built-in panels, so Regolith Glass uses copies of four of them: the agents list, the spaces list, the ⌘P picker and the sidebar's top and bottom bars (`regolith-agents`, `regolith-spaces`, `regolith-picker`, `regolith-chrome`). Herdr updates its own panels, never copies. When Herdr improves one of those panels, you'll keep the older version until this repo is updated and you run the installer again. If a Herdr update ever breaks a copy, switch back to the **Herdr** layout; the themes keep working there.
+
+### Your own layout
+
+To change fonts, pane corners, gaps or blur yourself, copy a layout first; Herdr replaces its built-in layouts every time it starts:
+
+```sh
+herdr-app do layout.clone '{"name":"regolith-glass","as":"my-layout"}'
+```
+
+Then edit `~/.config/herdr-app/layouts/my-layout.json`. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-files) builds the settings for you as you turn its knobs: **root keys** go on the layout's top-level node, and **pane frame** settings go on the `main` block's `content.pane`. If the file has a mistake, Herdr keeps the last good version and writes the reason to `layout.error`. **Ctrl+Alt+Shift+Esc** always resets to the default layout.
 
 ## Uninstall
 
 ```sh
-cd ~/.config/herdr-app/themes
-rm regolith.json regolith-dust.json regolith-orbit.json regolith-moss.json mono.json paper-cobalt.json
+cd ~/.config/herdr-app
+rm themes/regolith.json themes/regolith-dust.json themes/regolith-orbit.json themes/regolith-moss.json themes/mono.json themes/paper-cobalt.json
+# if you installed Regolith Glass, switch to another layout first, then:
+rm layouts/regolith-glass.json
+rm -r mods/regolith-agents mods/regolith-spaces mods/regolith-picker mods/regolith-chrome
 ```
 
 Then pick another theme in Settings.
@@ -100,7 +120,7 @@ Every theme is plain JSON:
 }
 ```
 
-Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those. Anything under `colors` overrides it. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
+Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those, and anything under `colors` overrides it. In these files `canvas` and `chrome` end in alpha (`00` and `8C`) so the blur shows through in Regolith Glass; layouts without blur still look solid. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
 
 Don't name a theme `graphite`, `ink`, `moss` or `paper`. Herdr ships themes with those names, and yours would be hidden.
 
