@@ -191,6 +191,23 @@ a.copy { text-decoration: none; display: inline-flex; align-items: center; }
 .file-stack { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .gh { margin-left: auto; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
 .foot-site { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--hairline); padding-top: 20px; font-size: 13px; color: var(--metadata); }
+/* ---------- install ---------- */
+.install { display: grid; grid-template-columns: 1fr 1.15fr; gap: 12px; align-items: start; }
+.steps { display: grid; gap: 12px; }
+.step { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px; display: grid; grid-template-columns: 32px 1fr; gap: 14px; }
+.step > div { display: grid; gap: 10px; min-width: 0; }
+.step b { color: var(--ink); font-weight: 600; }
+.step p { margin: 0; font-size: 14px; }
+.num { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: #1A1A1A; color: var(--ink); font: 500 13px/1 var(--mono); }
+.step:first-child .num { background: var(--red); }
+.cmd { display: flex; align-items: center; gap: 10px; background: var(--ground); border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 8px 8px 12px; min-width: 0; }
+.cmd pre { margin: 0; flex: 1; overflow-x: auto; font: 12.5px/1.5 var(--mono); color: var(--ink); }
+kbd { font: 12px var(--mono); color: var(--ink); border: 1px solid var(--raised); border-radius: 5px; padding: 1px 6px; }
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.shot { margin: 0; display: grid; gap: 8px; }
+.shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--hairline); display: block; }
+.shot figcaption { font-size: 12.5px; color: var(--metadata); }
+@media (max-width: 900px) { .install, .shots { grid-template-columns: 1fr; } }
 @media (max-width: 900px) { .split, .files { grid-template-columns: 1fr; } .stage { padding: 14px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -214,7 +231,7 @@ a.copy { text-decoration: none; display: inline-flex; align-items: center; }
     <div>
       <div class="eyebrow">01 · Live window</div>
       <h2 id="h-preview">Six themes from one palette</h2>
-      <p>The Regolith trio comes straight from Murmur's keyboard themes; Moss and Mono share the same rules. Hover any slot in section 03 to see where it paints.</p>
+      <p>The Regolith trio comes straight from Murmur's keyboard themes; Regolith Moss, Mono and Paper Cobalt share the same rules. Hover any slot in section 03 to see where it paints.</p>
     </div>
     <div class="themes" id="themeChips" role="group" aria-label="Theme"></div>
   </div>
@@ -321,7 +338,7 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
     <div>
       <div class="eyebrow">02 · Knobs</div>
       <h2 id="h-knobs">What a layout can change</h2>
-      <p>Each control maps to one key in a layout file. The key is printed under its label, and the files in section 05 update as you move them.</p>
+      <p>Each control maps to one key in a layout file. The key is printed under its label, and the files in section 06 update as you move them.</p>
     </div>
   </div>
   <div class="knobs">
@@ -396,10 +413,48 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
   <div class="gallery" id="gallery"></div>
 </section>
 
+<section class="sec" aria-labelledby="h-install">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">05 · Install</div>
+      <h2 id="h-install">Install in two steps</h2>
+      <p>The script copies the six theme files into <code>~/.config/herdr-app/themes/</code> and touches nothing else. Run it again any time to update.</p>
+    </div>
+  </div>
+  <div class="install">
+    <div class="steps">
+      <div class="step">
+        <span class="num">1</span>
+        <div><b>Add the themes</b>
+          <div class="cmd"><pre id="pInstall">curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh</pre><button class="copy" data-copy="pInstall">Copy</button></div>
+          <p class="note">Or download any file from the gallery and put it in <code>~/.config/herdr-app/themes/</code>. Herdr picks new themes up without a restart.</p></div>
+      </div>
+      <div class="step">
+        <span class="num">2</span>
+        <div><b>Pick one</b>
+          <p>Open Settings with <kbd>⌘,</kbd>, choose <b>Look</b>, and click a theme under <b>Dark</b>, and one under <b>Light</b> if you like. Set <b>Appearance</b> to <b>System</b> to follow macOS.</p>
+          <div class="cmd"><pre id="pCli">herdr-app do app.theme --name regolith</pre><button class="copy" data-copy="pCli">Copy</button></div>
+          <p class="note">The command does the same from a terminal, for the layout you're in.</p></div>
+      </div>
+      <div class="step">
+        <span class="num">×</span>
+        <div><b>Uninstall</b>
+          <p>Delete the six files from <code>~/.config/herdr-app/themes/</code>, then pick another theme in Settings.</p></div>
+      </div>
+    </div>
+    <figure class="shot"><img src="images/settings-regolith.png" alt="Herdr Settings, Look: the Regolith theme picked under Dark, beside Herdr's own themes" width="1400" height="988" loading="lazy">
+      <figcaption>Settings › Look, with Regolith picked. Each layout keeps its own light and dark choice.</figcaption></figure>
+  </div>
+  <div class="shots">
+    <figure class="shot"><img src="images/settings-orbit.png" alt="Herdr Settings drawn in Regolith Orbit" width="1400" height="988" loading="lazy"><figcaption>Regolith Orbit, dark</figcaption></figure>
+    <figure class="shot"><img src="images/settings-dust.png" alt="Herdr Settings drawn in Regolith Dust" width="1400" height="988" loading="lazy"><figcaption>Regolith Dust, light</figcaption></figure>
+  </div>
+</section>
+
 <section class="sec" aria-labelledby="h-files">
   <div class="sec-head">
     <div>
-      <div class="eyebrow">05 · Files</div>
+      <div class="eyebrow">06 · Files</div>
       <h2 id="h-files">Copy into Herdr</h2>
       <p>The theme file goes in <code>~/.config/herdr-app/themes/</code>. The other two are optional: paste the root keys onto a layout's root node, and the pane frame onto its <code>main</code> block's <code>content.pane</code>.</p>
     </div>
@@ -437,7 +492,7 @@ const MANIFEST = [
   { slug: "regolith", name: "Regolith", tag: "dark" },
   { slug: "regolith-dust", name: "Regolith Dust", tag: "light" },
   { slug: "regolith-orbit", name: "Regolith Orbit", tag: "blue night" },
-  { slug: "moss", name: "Moss", tag: "dark · green" },
+  { slug: "regolith-moss", name: "Regolith Moss", tag: "dark · green" },
   { slug: "mono", name: "Mono", tag: "AMOLED" },
   { slug: "paper-cobalt", name: "Paper Cobalt", tag: "light" }
 ];
