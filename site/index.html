@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regolith for Herdr</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Geist+Mono:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Regolith's own tokens. Single dark world, as the app is: black ground, greys, one red.
+   Layout: header, then the live Herdr window, then the knobs, then the slot map and the files to copy. */
+:root {
+  --ground: #0A0A0A;
+  --surface: #0F0F0F;
+  --hairline: #1F1F1F;
+  --raised: #2E2E2E;
+  --metadata: #6E6E6E;
+  --body: #A0A0A0;
+  --ink: #FFFFFF;
+  --red: #E11B17;
+  --live: #3DDC84;
+  --display: "Michroma", "Eurostile", "Helvetica Neue", sans-serif;
+  --text: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--ground); color: var(--body); font: 15px/1.55 var(--text); }
+a { color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 40px 24px 80px; display: grid; gap: 48px; }
+header { display: grid; gap: 12px; }
+.mark { display: flex; align-items: center; gap: 12px; color: var(--metadata); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+h1 { font: 400 clamp(26px, 4vw, 40px)/1.15 var(--display); color: var(--ink); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+h2 { font: 400 17px/1.3 var(--display); color: var(--ink); margin: 0; letter-spacing: .04em; text-wrap: balance; }
+.lede { max-width: 68ch; margin: 0; }
+.sec { display: grid; gap: 18px; }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+.sec-head p { margin: 4px 0 0; max-width: 70ch; font-size: 14px; }
+.eyebrow { font: 500 11px/1 var(--mono); color: var(--metadata); letter-spacing: .12em; text-transform: uppercase; }
+
+/* theme chips */
+.themes { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color: var(--ink); font: 500 13px/1 var(--text); cursor: pointer; }
+.chip:hover { border-color: rgba(255,255,255,.34); }
+.chip[aria-pressed="true"] { background: var(--ink); color: #0A0A0A; border-color: var(--ink); }
+.chip .sw { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.2); }
+.chip .sw i { width: 8px; height: 8px; border-radius: 50%; }
+.chip small { font-weight: 400; opacity: .6; }
+
+/* ---------- the Herdr window ---------- */
+.stage { position: relative; border-radius: 16px; padding: 28px; overflow: hidden; border: 1px solid var(--hairline);
+  background: radial-gradient(120% 90% at 80% 120%, #5a1a0e 0%, #2a0d08 35%, #0b0b0d 70%), #0b0b0d; }
+.stage::before { content: ""; position: absolute; inset: auto -10% -55% -10%; height: 90%; border-radius: 50%;
+  background: radial-gradient(closest-side, #c4502a 0%, #7a2a14 45%, transparent 75%); opacity: .55; pointer-events: none; }
+.stage.flat { background: #070707; }
+.stage.flat::before { display: none; }
+.scroller { overflow-x: auto; position: relative; }
+.herdr { --pane-radius: 10px; --pane-gap: 8px; --pad-x: 14px; --pad-y: 12px; --lh: 1.35; --fs: 13px; --fw: 500; --opacity: 1;
+  --tfont: var(--mono); --bw: 1px; --focus: var(--accent);
+  position: relative; min-width: 980px; height: 600px; display: grid; grid-template-columns: 236px 1fr; border-radius: 12px; overflow: hidden;
+  background: var(--canvas); color: var(--foreground); font: 13px/1.4 var(--text); border: 1px solid var(--border);
+  box-shadow: 0 30px 80px rgba(0,0,0,.6); transition: background .25s, color .25s; }
+.herdr.glass { background: color-mix(in srgb, var(--canvas) 30%, transparent); backdrop-filter: blur(26px) saturate(1.3); -webkit-backdrop-filter: blur(26px) saturate(1.3); }
+.herdr.glass .side { background: color-mix(in srgb, var(--chrome) 55%, transparent); }
+.herdr.glass .tabs { background: transparent; }
+.side { background: var(--chrome); border-right: 1px solid var(--border); display: grid; grid-template-rows: 46px 1fr 1fr 64px; min-height: 0; }
+.brand { display: flex; align-items: center; gap: 8px; padding: 0 14px 0 76px; position: relative; }
+.lights { position: absolute; left: 14px; top: 17px; display: flex; gap: 8px; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; background: var(--raised); }
+.brand b { font: 600 13px/1 var(--text); letter-spacing: .02em; }
+.brand span { color: var(--dim); font-size: 12px; margin-left: auto; }
+.list { padding: 8px 8px 0; display: grid; align-content: start; gap: 2px; min-height: 0; overflow: hidden; }
+.list h4 { margin: 4px 8px 6px; font: 600 10.5px/1 var(--text); color: var(--dim); letter-spacing: .1em; text-transform: uppercase; }
+.row { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 7px; color: var(--muted); }
+.row:hover { background: var(--hover); }
+.row.on { background: var(--selected); color: var(--foreground); }
+.row .ico { width: 18px; height: 18px; border-radius: 5px; background: var(--raised); display: grid; place-items: center; font: 700 9px/1 var(--mono); color: var(--foreground); flex: none; }
+.row .meta { margin-left: auto; font: 11px/1 var(--mono); color: var(--dim); }
+.row .sub { display: block; font-size: 11px; color: var(--dim); }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.dot.working { background: var(--working); box-shadow: 0 0 0 3px color-mix(in srgb, var(--working) 22%, transparent); }
+.dot.blocked { background: var(--blocked); }
+.dot.done { background: var(--done); }
+.dot.idle { background: var(--idle); }
+.dot.unknown { background: var(--unknown); }
+.foot { border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; padding: 0 12px; }
+.btn-solid { background: var(--solid); color: var(--solid_foreground); border: 0; border-radius: 999px; padding: 8px 14px; font: 600 12px/1 var(--text); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--input); border-radius: 999px; padding: 7px 12px; font: 500 12px/1 var(--text); }
+.work { display: grid; grid-template-rows: 42px 1fr; min-width: 0; min-height: 0; }
+.tabs { display: flex; align-items: center; gap: 6px; padding: 0 10px; border-bottom: 1px solid var(--border); background: var(--chrome); }
+.tab { display: flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; color: var(--muted); font-size: 12.5px; }
+.tab.on { background: var(--surface); color: var(--foreground); box-shadow: inset 0 0 0 1px var(--border); }
+.tab.on::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.tab.plus { color: var(--dim); padding: 6px 9px; }
+.tabs .spacer { flex: 1; }
+.kbd { font: 11px/1 var(--mono); color: var(--dim); border: 1px solid var(--border); padding: 4px 6px; border-radius: 5px; }
+.body { padding: 8px; display: grid; grid-template-columns: 1.25fr 1fr; grid-template-rows: 1fr 1fr; gap: var(--pane-gap); min-height: 0; }
+.pane { background: color-mix(in srgb, var(--background) calc(var(--opacity) * 100%), transparent); border-radius: var(--pane-radius);
+  border: var(--bw) solid var(--border); display: grid; grid-template-rows: 30px 1fr; min-height: 0; overflow: hidden; position: relative; }
+.pane.big { grid-row: span 2; }
+.pane.focus { border-color: var(--focus); }
+.herdr.hb .pane { grid-template-rows: 1fr 30px; }
+.herdr.hb .phead { order: 2; border-bottom: 0; border-top: 1px solid var(--border); }
+.herdr.hh .pane { grid-template-rows: 1fr; }
+.herdr.hh .phead { position: absolute; inset: 0 0 auto 0; z-index: 2; background: var(--popover); opacity: 0; transition: opacity .15s; }
+.herdr.hh .pane:hover .phead { opacity: 1; }
+.phead { display: flex; align-items: center; gap: 8px; padding: 0 10px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+.phead b { color: var(--foreground); font-weight: 500; }
+.phead .br { font: 11px/1 var(--mono); color: var(--dim); }
+.phead .acts { margin-left: auto; display: flex; gap: 4px; }
+.phead .acts i { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; color: var(--dim); font: normal 12px/1 var(--mono); }
+.phead .acts i:hover { background: var(--hover); color: var(--foreground); }
+.term { padding: var(--pad-y) var(--pad-x); font-family: var(--tfont); font-size: var(--fs); line-height: var(--lh); font-weight: var(--fw);
+  color: var(--foreground); white-space: pre; overflow: hidden; min-height: 0; font-variant-ligatures: none; }
+.term b { font-weight: 700; }
+.sel { background: var(--selection); }
+.cur { background: var(--cursor); color: var(--background); }
+.c0{color:var(--ansi0)}.c1{color:var(--ansi1)}.c2{color:var(--ansi2)}.c3{color:var(--ansi3)}.c4{color:var(--ansi4)}.c5{color:var(--ansi5)}.c6{color:var(--ansi6)}.c7{color:var(--ansi7)}
+.c8{color:var(--ansi8)}.c9{color:var(--ansi9)}.c10{color:var(--ansi10)}.c11{color:var(--ansi11)}.c12{color:var(--ansi12)}.c13{color:var(--ansi13)}.c14{color:var(--ansi14)}.c15{color:var(--ansi15)}
+.blk { display: inline-block; width: 2.2ch; height: 1em; vertical-align: -0.12em; border-radius: 2px; }
+.toast { position: absolute; right: 16px; bottom: 16px; width: 270px; background: var(--popover); border: 1px solid var(--input); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; box-shadow: 0 16px 40px rgba(0,0,0,.35); z-index: 3; }
+.toast b { color: var(--foreground); font-size: 12.5px; display: flex; align-items: center; gap: 8px; }
+.toast span { color: var(--muted); font-size: 12px; }
+.toast .acts { display: flex; gap: 6px; margin-top: 6px; }
+.hl { outline: 2px dashed var(--ink) !important; outline-offset: -2px; }
+
+/* ---------- knobs ---------- */
+.knobs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px; display: grid; gap: 14px; align-content: start; }
+.card h3 { margin: 0; font: 600 13px/1.2 var(--text); color: var(--ink); display: flex; justify-content: space-between; gap: 8px; }
+.card h3 code { font: 400 11px/1.2 var(--mono); color: var(--metadata); }
+.ctl { display: grid; gap: 6px; font-size: 13px; }
+.ctl label { display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { font: 12px/1 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ctl .key { font: 11px/1.2 var(--mono); color: var(--metadata); }
+input[type=range] { width: 100%; accent-color: var(--red); }
+select { background: #141414; color: var(--ink); border: 1px solid var(--raised); border-radius: 8px; padding: 7px 10px; font: 13px var(--text); }
+.seg { display: inline-flex; border: 1px solid var(--raised); border-radius: 999px; padding: 2px; gap: 2px; flex-wrap: wrap; }
+.seg button { background: transparent; color: #8A8A8A; border: 0; border-radius: 999px; padding: 6px 11px; font: 500 12px/1 var(--text); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #2E2E2E; color: var(--ink); }
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; cursor: pointer; }
+.switch input { appearance: none; width: 36px; height: 20px; border-radius: 999px; background: #161616; border: 1px solid var(--raised); position: relative; cursor: pointer; margin: 0; flex: none; }
+.switch input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #6E6E6E; transition: transform .15s; }
+.switch input:checked { background: var(--red); border-color: var(--red); }
+.switch input:checked::after { transform: translateX(16px); background: #fff; }
+.note { font-size: 12.5px; color: var(--metadata); margin: 0; }
+
+/* ---------- slot map ---------- */
+.split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2px; }
+.slot { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 8px; cursor: default; }
+.slot:hover { background: #141414; }
+.slot .sw { width: 28px; height: 28px; border-radius: 7px; border: 1px solid rgba(255,255,255,.14); }
+.slot b { color: var(--ink); font: 500 12.5px/1.2 var(--mono); display: block; }
+.slot span { font-size: 12px; color: var(--metadata); }
+.slot code { font: 11px/1 var(--mono); color: var(--body); }
+.ansi { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.ansi div { aspect-ratio: 1; border-radius: 8px; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: end; padding: 6px; font: 10px/1 var(--mono); }
+.surfaces { display: grid; gap: 10px; }
+.surfaces li { list-style: none; display: grid; grid-template-columns: 150px 1fr; gap: 12px; font-size: 13px; padding: 10px 0; border-top: 1px solid var(--hairline); }
+.surfaces li b { color: var(--ink); font-weight: 500; }
+.surfaces ul { margin: 0; padding: 0; }
+.surfaces code, p code { font: 12px var(--mono); color: var(--ink); }
+
+/* ---------- files ---------- */
+.files { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.file { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.file header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--hairline); }
+.file header code { font: 12.5px var(--mono); color: var(--ink); }
+.copy { background: rgba(255,255,255,.06); color: var(--ink); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 6px 12px; font: 500 12px/1 var(--text); cursor: pointer; }
+.copy:hover { border-color: rgba(255,255,255,.34); }
+.file pre { margin: 0; padding: 14px; font: 12px/1.5 var(--mono); color: var(--body); overflow: auto; max-height: 420px; }
+
+/* ---------- gallery, footer ---------- */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+.g { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; display: grid; }
+.g-win { background: var(--g-bg); padding: 14px; display: grid; gap: 10px; }
+.g-bar { display: flex; align-items: center; gap: 6px; font: 500 11px/1 var(--text); color: var(--g-dim); }
+.g-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--g-border); }
+.g-bar span { margin-left: 6px; }
+.g pre { margin: 0; background: var(--g-term); color: var(--g-fg); border: 1px solid var(--g-border); border-left: 2px solid var(--g-accent); border-radius: 8px; padding: 10px 12px; font: 12px/1.5 var(--mono); overflow: hidden; }
+.g-ansi { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
+.g-ansi i { height: 10px; border-radius: 2px; }
+.g-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; flex-wrap: wrap; }
+.g-meta b { color: var(--ink); font-weight: 600; display: block; }
+.g-meta small { color: var(--metadata); font-size: 12px; }
+.g-acts { display: flex; gap: 6px; }
+a.copy { text-decoration: none; display: inline-flex; align-items: center; }
+.file-stack { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.gh { margin-left: auto; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
+.foot-site { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--hairline); padding-top: 20px; font-size: 13px; color: var(--metadata); }
+@media (max-width: 900px) { .split, .files { grid-template-columns: 1fr; } .stage { padding: 14px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="mark">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M2 20 L20 2 L20 20 Z" fill="#E11B17"/><path d="M6 20 L20 6" stroke="#0A0A0A" stroke-width="1.4"/><path d="M10 20 L20 10" stroke="#0A0A0A" stroke-width="1.4"/><path d="M14 20 L20 14" stroke="#0A0A0A" stroke-width="1.4"/></svg>
+    Regolith design system · Herdr
+    <a class="gh" href="https://github.com/Jmeza081/herdr-regolith">GitHub</a>
+  </div>
+  <h1>Regolith for Herdr</h1>
+  <p id="loadError" class="note" hidden style="color:#FF4A3D">The theme files didn’t load. Serve this page from a web server, not straight from a file.</p>
+  <p class="lede">Every color, frame and terminal setting Herdr lets a layout change, drawn live in Regolith's palette. Pick a theme, turn the knobs, and copy the files at the bottom into <code style="font:13px var(--mono);color:#fff">~/.config/herdr-app/</code>.</p>
+</header>
+
+<section class="sec" aria-labelledby="h-preview">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">01 · Live window</div>
+      <h2 id="h-preview">Six themes from one palette</h2>
+      <p>The Regolith trio comes straight from Murmur's keyboard themes; Moss and Mono share the same rules. Hover any slot in section 03 to see where it paints.</p>
+    </div>
+    <div class="themes" id="themeChips" role="group" aria-label="Theme"></div>
+  </div>
+
+  <div class="stage flat" id="stage">
+    <div class="scroller">
+    <div class="herdr" id="herdr">
+      <aside class="side" data-slot="chrome">
+        <div class="brand">
+          <div class="lights"><i></i><i></i><i></i></div>
+          <b>Herdr</b><span>regolith</span>
+        </div>
+        <div class="list">
+          <h4>Spaces</h4>
+          <div class="row on" data-slot="selected"><span class="ico">R</span><span>regolith<span class="sub">main · 3 tabs</span></span><span class="meta">⌘1</span></div>
+          <div class="row" data-slot="hover"><span class="ico">M</span><span>Murmur<span class="sub">main · 2 tabs</span></span><span class="meta">⌘2</span></div>
+          <div class="row"><span class="ico">C</span><span>captionist<span class="sub">spike/vad</span></span><span class="meta">⌘3</span></div>
+        </div>
+        <div class="list">
+          <h4>Agents</h4>
+          <div class="row"><span class="dot working" data-slot="working"></span><span>claude<span class="sub">regolith · tests</span></span><span class="meta">working</span></div>
+          <div class="row"><span class="dot blocked" data-slot="blocked"></span><span>codex<span class="sub">Murmur · needs approval</span></span><span class="meta">blocked</span></div>
+          <div class="row"><span class="dot done" data-slot="done"></span><span>claude<span class="sub">regolith · site</span></span><span class="meta">done</span></div>
+          <div class="row"><span class="dot idle" data-slot="idle"></span><span>gemini<span class="sub">captionist</span></span><span class="meta">idle</span></div>
+        </div>
+        <div class="foot">
+          <button class="btn-solid" data-slot="solid" tabindex="-1">New space</button>
+          <button class="btn-ghost" data-slot="input" tabindex="-1">Settings</button>
+        </div>
+      </aside>
+      <div class="work">
+        <nav class="tabs" data-slot="chrome">
+          <span class="tab on" data-slot="surface">tests</span>
+          <span class="tab">diff</span>
+          <span class="tab">site</span>
+          <span class="tab plus">+</span>
+          <span class="spacer"></span>
+          <span class="kbd">⌘T</span>
+        </nav>
+        <div class="body" data-slot="canvas">
+          <div class="pane big focus" data-slot="background">
+            <div class="phead"><span class="dot working"></span><b>claude</b><span>~/local-git/regolith</span><span class="br">main</span><span class="acts"><i>⇥</i><i>⤢</i><i>×</i></span></div>
+<div class="term"><span class="c4">~/local-git/regolith</span> <span class="c5">main</span> <span class="c8">❯</span> git status -sb
+<span class="c2">## main</span>...<span class="c1">origin/main</span> [ahead <span class="c3">2</span>]
+ <span class="c1">M</span> app/src/main/java/com/regolith/ui/theme/Color.kt
+ <span class="c1">M</span> site-src/index.html
+<span class="c1">??</span> design/herdr-theme/
+<span class="c4">~/local-git/regolith</span> <span class="c5">main</span> <span class="c8">❯</span> ./gradlew :app:testDebugUnitTest
+<span class="c8">&gt; Task :app:compileDebugKotlin</span>
+<span class="c8">&gt; Task :app:testDebugUnitTest</span>
+
+ChapterSidecarTest &gt; parsesEvenSplit <span class="c2"><b>PASSED</b></span>
+ChapterSidecarTest &gt; userChaptersWin <span class="c2"><b>PASSED</b></span>
+ColorBleedTest &gt; sampleZones <span class="c2"><b>PASSED</b></span>
+SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
+    <span class="c9">expected:&lt;\\nas\films&gt; but was:&lt;\nas\films&gt;</span>
+      at <span class="c6">SmbPathTest.kt:41</span>
+
+<span class="c3">⚠</span> 1 of 48 tests failed
+<span class="c1"><b>BUILD FAILED</b></span> in <span class="c3">14s</span>
+
+<span class="c13">●</span> <b>claude</b> <span class="c8">reading</span> SmbPath.kt <span class="c8">· 3.1k tokens</span>
+  <span class="c8">The UNC prefix loses one backslash in</span>
+  <span class="c8">normalize(). Fixing </span><span class="sel">line 27</span><span class="c8"> to keep both.</span>
+<span class="c4">~/local-git/regolith</span> <span class="c5">main</span> <span class="c8">❯</span> <span class="cur"> </span></div>
+          </div>
+          <div class="pane" data-slot="background">
+            <div class="phead"><span class="dot idle"></span><b>zsh</b><span>diff</span><span class="br">main</span><span class="acts"><i>⇥</i><i>⤢</i><i>×</i></span></div>
+<div class="term"><span class="c8">❯</span> git diff --stat
+ ui/theme/Color.kt | 4 <span class="c2">++</span><span class="c1">--</span>
+<span class="c6">@@ -18,7 +18,7 @@</span> <span class="c8">val Ground</span>
+ val Ground = Color(0xFF0A0A0A)
+<span class="c1">-val Red = Color(0xFFE11B17)</span>
+<span class="c2">+val Red = Color(0xFFE5251F)</span>
+<span class="c1">-val Live = Color(0xFF3DDC84)</span>
+<span class="c2">+val Live = Color(0xFF39D27C)</span>
+ val NavIdle = Color(0xFF8A8A8A)</div>
+          </div>
+          <div class="pane" data-slot="background">
+            <div class="phead"><span class="dot done"></span><b>zsh</b><span>palette</span><span class="br">~</span><span class="acts"><i>⇥</i><i>⤢</i><i>×</i></span></div>
+<div class="term"><span class="c8">❯</span> ls -la design/
+<span class="c4"><b>drwxr-xr-x</b></span>  <span class="c4"><b>file-management</b></span>
+<span class="c4"><b>drwxr-xr-x</b></span>  <span class="c4"><b>nav-pill-toolbar</b></span>
+-rw-r--r--  <span class="c2">poster.png</span>   <span class="c3">2.4M</span>
+-rwxr-xr-x  <span class="c10"><b>shot.sh</b></span>      <span class="c3">812B</span>
+<span class="c8">❯</span> palette
+<span class="blk" style="background:var(--ansi0)"></span><span class="blk" style="background:var(--ansi1)"></span><span class="blk" style="background:var(--ansi2)"></span><span class="blk" style="background:var(--ansi3)"></span><span class="blk" style="background:var(--ansi4)"></span><span class="blk" style="background:var(--ansi5)"></span><span class="blk" style="background:var(--ansi6)"></span><span class="blk" style="background:var(--ansi7)"></span>
+<span class="blk" style="background:var(--ansi8)"></span><span class="blk" style="background:var(--ansi9)"></span><span class="blk" style="background:var(--ansi10)"></span><span class="blk" style="background:var(--ansi11)"></span><span class="blk" style="background:var(--ansi12)"></span><span class="blk" style="background:var(--ansi13)"></span><span class="blk" style="background:var(--ansi14)"></span><span class="blk" style="background:var(--ansi15)"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="toast" data-slot="popover">
+        <b><span class="dot blocked"></span>codex needs approval</b>
+        <span>Murmur · wants to run <code style="font:11px var(--tfont)">./gradlew installDebug</code></span>
+        <div class="acts"><button class="btn-solid" tabindex="-1">Allow</button><button class="btn-ghost" tabindex="-1">Open tab</button></div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-knobs">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">02 · Knobs</div>
+      <h2 id="h-knobs">What a layout can change</h2>
+      <p>Each control maps to one key in a layout file. The key is printed under its label, and the files in section 05 update as you move them.</p>
+    </div>
+  </div>
+  <div class="knobs">
+    <div class="card">
+      <h3>Terminal text <code>root</code></h3>
+      <div class="ctl"><label for="kFont">Font <span class="key">font</span></label>
+        <select id="kFont">
+          <option value="JetBrains Mono">JetBrains Mono (ships)</option>
+          <option value="Geist Mono">Geist Mono (ships)</option>
+          <option value="IBM Plex Mono">IBM Plex Mono</option>
+          <option value="Space Mono">Space Mono</option>
+        </select></div>
+      <div class="ctl"><label for="kSize">Size <output id="oSize"></output></label><input type="range" id="kSize" min="11" max="17" step="1" value="13"><span class="key">font_size</span></div>
+      <div class="ctl"><label for="kLh">Line height <output id="oLh"></output></label><input type="range" id="kLh" min="0.9" max="1.8" step="0.05" value="1.35"><span class="key">terminal_line_height · 0.8–2</span></div>
+      <div class="ctl"><label>Weight <span class="key">font_weight</span></label>
+        <div class="seg" id="kWeight"><button data-v="300">300</button><button data-v="400">400</button><button data-v="500" aria-pressed="true">500</button></div></div>
+    </div>
+    <div class="card">
+      <h3>Pane frames <code>tab block · pane</code></h3>
+      <div class="ctl"><label for="kRadius">Corner radius <output id="oRadius"></output></label><input type="range" id="kRadius" min="0" max="18" value="10"><span class="key">radius</span></div>
+      <div class="ctl"><label for="kGap">Gap between panes <output id="oGap"></output></label><input type="range" id="kGap" min="0" max="16" value="8"><span class="key">gap</span></div>
+      <div class="ctl"><label for="kPad">Terminal padding <output id="oPad"></output></label><input type="range" id="kPad" min="0" max="24" value="14"><span class="key">terminal_padding [x, y]</span></div>
+      <div class="ctl"><label>Focus ring <span class="key">focus.color</span></label>
+        <div class="seg" id="kFocus"><button data-v="accent" aria-pressed="true">accent</button><button data-v="foreground">foreground</button><button data-v="border">none</button></div></div>
+    </div>
+    <div class="card">
+      <h3>Pane header <code>pane.header</code></h3>
+      <div class="ctl"><label>Where it sits <span class="key">position · reveal</span></label>
+        <div class="seg" id="kHead"><button data-v="top" aria-pressed="true">top</button><button data-v="bottom">bottom</button><button data-v="hover">on hover</button></div></div>
+      <p class="note">The header is the shipped <code>pane</code> mod: one copy per pane, reading title, folder, branch and agent status. On hover it draws over the terminal, so the terminal never resizes.</p>
+    </div>
+    <div class="card">
+      <h3>Glass <code>root</code></h3>
+      <label class="switch" for="kBlur">Window blur <span class="key" style="margin-left:auto;margin-right:8px">window_blur</span><input type="checkbox" id="kBlur"></label>
+      <div class="ctl"><label for="kOp">Terminal opacity <output id="oOp"></output></label><input type="range" id="kOp" min="0.4" max="1" step="0.05" value="1"><span class="key">terminal_opacity · 0–1</span></div>
+      <p class="note">With blur on, Herdr wants a transparent <code>canvas</code> and a translucent <code>chrome</code>. The export writes those overrides for you. The red horizon here stands in for your desktop.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-slots">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">03 · Slots</div>
+      <h2 id="h-slots">Every color Herdr names</h2>
+      <p>A theme sets these by name, and mods read them through <code>theme()</code>, so every panel follows along. Hover a slot to outline it in the window above.</p>
+    </div>
+  </div>
+  <div class="split">
+    <div class="card"><div class="slots" id="slots"></div></div>
+    <div class="card">
+      <h3>Terminal palette <code>ansi 0–15</code></h3>
+      <div class="ansi" id="ansi"></div>
+      <ul class="surfaces">
+        <li><b>Terminals</b><span><code>background</code>, <code>foreground</code>, <code>cursor</code>, <code>selection</code> and the 16 ANSI colors. These are the only required keys in a theme file.</span></li>
+        <li><b>Panels</b><span>Herdr derives <code>chrome</code>, <code>surface</code>, <code>border</code> and the rest from the terminal colors. Set them under <code>colors</code> to take control.</span></li>
+        <li><b>Agent status</b><span><code>working</code>, <code>blocked</code>, <code>done</code>, <code>idle</code>, <code>unknown</code> color the dots in the sidebar, pane headers and toasts.</span></li>
+        <li><b>Regolith rule</b><span>One red per screen. Here it marks the focused pane and the one action that needs you.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-gallery">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">04 · Gallery</div>
+      <h2 id="h-gallery">All six at a glance</h2>
+      <p>Preview any theme in the window above, or download its file.</p>
+    </div>
+  </div>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-files">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow">05 · Files</div>
+      <h2 id="h-files">Copy into Herdr</h2>
+      <p>The theme file goes in <code>~/.config/herdr-app/themes/</code>. The other two are optional: paste the root keys onto a layout's root node, and the pane frame onto its <code>main</code> block's <code>content.pane</code>.</p>
+    </div>
+  </div>
+  <div class="files">
+    <div class="file"><header><code id="fThemeName">themes/regolith.json</code><button class="copy" data-copy="pTheme">Copy</button></header><pre id="pTheme"></pre></div>
+    <div class="file-stack">
+      <div class="file"><header><code>layout · root keys</code><button class="copy" data-copy="pRoot">Copy</button></header><pre id="pRoot"></pre></div>
+      <div class="file"><header><code>layout · main block · content.pane</code><button class="copy" data-copy="pPane">Copy</button></header><pre id="pPane"></pre></div>
+    </div>
+  </div>
+  <p class="note">Space Grotesk isn't bundled with Herdr. To use it as <code>ui_font</code>, install it or put the .ttf in <code>~/.config/herdr-app/fonts/</code>; otherwise leave <code>ui_font</code> out.</p>
+</section>
+
+
+<footer class="foot-site">
+  <span>Themes for Herdr, drawn from the Regolith design system.</span>
+  <a href="https://github.com/Jmeza081/herdr-regolith">Source on GitHub</a>
+</footer>
+</div>
+
+<script>
+const SLOT_INFO = {
+  background: "terminals and pane cards", canvas: "behind the cards", chrome: "sidebar and tab bar",
+  surface: "active tab, raised cards", popover: "toasts and menus", raised: "icons, knobs",
+  hover: "row under the pointer", selected: "current space", border: "hairlines and pane edges",
+  input: "outline buttons, strong borders", foreground: "primary text", muted: "secondary text",
+  dim: "metadata, hints", accent: "focus ring, active tab dot", accent_foreground: "text on accent",
+  solid: "primary button", solid_foreground: "text on the primary button", selection: "selected terminal text",
+  cursor: "terminal cursor", working: "agent working", blocked: "agent needs you", done: "agent finished",
+  idle: "agent waiting", unknown: "status not known"
+};
+
+const MANIFEST = [
+  { slug: "regolith", name: "Regolith", tag: "dark" },
+  { slug: "regolith-dust", name: "Regolith Dust", tag: "light" },
+  { slug: "regolith-orbit", name: "Regolith Orbit", tag: "blue night" },
+  { slug: "moss", name: "Moss", tag: "dark · green" },
+  { slug: "mono", name: "Mono", tag: "AMOLED" },
+  { slug: "paper-cobalt", name: "Paper Cobalt", tag: "light" }
+];
+const ORDER = MANIFEST.map(m => m.slug);
+const THEMES = {}, RAW = {};
+const SLOTS = Object.keys(SLOT_INFO);
+
+const state = { theme: "regolith", font: "JetBrains Mono", size: 13, lh: 1.35, weight: 500, radius: 10, gap: 8, pad: 14,
+  focus: "accent", head: "top", blur: false, op: 1 };
+try { const s = JSON.parse(localStorage.getItem("herdr-regolith") || "null"); if (s && ORDER.includes(s.theme)) Object.assign(state, s); } catch (e) {}
+
+const $ = id => document.getElementById(id);
+const herdr = $("herdr");
+
+function buildChips() {
+ORDER.forEach(k => {
+  const t = THEMES[k], b = document.createElement("button");
+  b.className = "chip"; b.dataset.k = k;
+  b.innerHTML = `<span class="sw" style="background:${t.canvas}"><i style="background:${t.accent}"></i></span>${t.name} <small>${t.tag}</small>`;
+  b.onclick = () => { state.theme = k; render(); };
+  $("themeChips").appendChild(b);
+});
+}
+
+
+function render() {
+  const t = THEMES[state.theme];
+  SLOTS.forEach(s => herdr.style.setProperty("--" + s, t[s]));
+  t.ansi.forEach((c, i) => herdr.style.setProperty("--ansi" + i, c));
+  herdr.style.setProperty("--tfont", `"${state.font}", ui-monospace, monospace`);
+  herdr.style.setProperty("--fs", state.size + "px");
+  herdr.style.setProperty("--lh", state.lh);
+  herdr.style.setProperty("--fw", state.weight);
+  herdr.style.setProperty("--pane-radius", state.radius + "px");
+  herdr.style.setProperty("--pane-gap", state.gap + "px");
+  herdr.style.setProperty("--pad-x", state.pad + "px");
+  herdr.style.setProperty("--pad-y", Math.round(state.pad * 0.85) + "px");
+  herdr.style.setProperty("--focus", `var(--${state.focus})`);
+  herdr.style.setProperty("--opacity", state.op);
+  herdr.querySelector(".body").style.gap = state.gap + "px";
+  herdr.classList.toggle("glass", state.blur);
+  herdr.classList.toggle("hb", state.head === "bottom");
+  herdr.classList.toggle("hh", state.head === "hover");
+  $("stage").classList.toggle("flat", !state.blur && state.op === 1);
+  document.querySelectorAll("#themeChips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.k === state.theme));
+
+  // controls reflect state
+  $("kFont").value = state.font; $("kSize").value = state.size; $("kLh").value = state.lh; $("kRadius").value = state.radius;
+  $("kGap").value = state.gap; $("kPad").value = state.pad; $("kBlur").checked = state.blur; $("kOp").value = state.op;
+  $("oSize").textContent = state.size + " px"; $("oLh").textContent = (+state.lh).toFixed(2); $("oRadius").textContent = state.radius + " px";
+  $("oGap").textContent = state.gap + " px"; $("oPad").textContent = state.pad + " px"; $("oOp").textContent = (+state.op).toFixed(2);
+  [["kWeight","weight"],["kFocus","focus"],["kHead","head"]].forEach(([id, key]) =>
+    $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v) === String(state[key]))));
+
+  // slots
+  $("slots").innerHTML = SLOTS.map(s => `<div class="slot" data-s="${s}"><span class="sw" style="background:${t[s]}"></span><div><b>${s}</b><span>${SLOT_INFO[s]}</span></div><code>${t[s]}</code></div>`).join("");
+  $("ansi").innerHTML = t.ansi.map((c, i) => `<div style="background:${c};color:${lum(c) > .45 ? "#0A0A0A" : "#FFFFFF"}">${i}</div>`).join("");
+
+  // files
+  const name = state.theme;
+  $("fThemeName").textContent = `themes/${name}.json`;
+  $("pTheme").textContent = RAW[name];
+  const root = { theme: name };
+  if (state.blur) {
+    root.window_blur = true;
+    root.colors = { canvas: t.canvas + "00", chrome: t.chrome + "8C" };
+  }
+  Object.assign(root, { font: state.font, font_size: +state.size, font_weight: +state.weight, ui_font: "Space Grotesk",
+    terminal_line_height: +(+state.lh).toFixed(2), terminal_padding: [+state.pad, Math.round(state.pad * 0.85)] });
+  if (+state.op < 1) root.terminal_opacity = +(+state.op).toFixed(2);
+  const pane = { gap: +state.gap, radius: +state.radius, background: "background", lone: true,
+    border: { width: 1, color: "border" },
+    focus: { width: 1, color: state.focus },
+    header: { content: { mod: "pane" }, height: 30, position: state.head === "bottom" ? "bottom" : "top", reveal: state.head === "hover" ? "hover" : "always" } };
+  $("pRoot").textContent = pretty(root);
+  $("pPane").textContent = pretty(pane);
+  try { localStorage.setItem("herdr-regolith", JSON.stringify(state)); } catch (e) {}
+}
+
+function pretty(o) {
+  // keep short arrays on one line
+  return JSON.stringify(o, null, 2).replace(/\[\s+([^\[\]{}]*?)\s+\]/g, (m, inner) => "[" + inner.replace(/\s*\n\s*/g, " ") + "]");
+}
+function lum(hex) {
+  const n = parseInt(hex.slice(1, 7), 16), r = (n >> 16) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+  return .2126 * r + .7152 * g + .0722 * b;
+}
+
+// inputs
+const bind = (id, key, num) => $(id).addEventListener("input", e => { state[key] = num ? +e.target.value : e.target.value; render(); });
+bind("kFont","font"); bind("kSize","size",1); bind("kLh","lh",1); bind("kRadius","radius",1); bind("kGap","gap",1); bind("kPad","pad",1); bind("kOp","op",1);
+$("kBlur").addEventListener("change", e => { state.blur = e.target.checked; render(); });
+[["kWeight","weight"],["kFocus","focus"],["kHead","head"]].forEach(([id, key]) =>
+  $(id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state[key] = b.dataset.v; render(); }));
+
+// slot hover → outline in the window
+$("slots").addEventListener("mouseover", e => {
+  const row = e.target.closest(".slot"); clear(); if (!row) return;
+  herdr.querySelectorAll(`[data-slot="${row.dataset.s}"]`).forEach(el => el.classList.add("hl"));
+});
+$("slots").addEventListener("mouseleave", clear);
+function clear() { herdr.querySelectorAll(".hl").forEach(el => el.classList.remove("hl")); }
+
+// copy
+document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($(b.dataset.copy).textContent); b.textContent = "Copied"; }
+  catch (e) { b.textContent = "Select and copy"; }
+  setTimeout(() => b.textContent = "Copy", 1600);
+}));
+
+function buildGallery() {
+  $("gallery").innerHTML = ORDER.map(k => {
+    const t = THEMES[k], a = t.ansi;
+    return `<article class="g" style="--g-bg:${t.canvas};--g-term:${t.background};--g-fg:${t.foreground};--g-dim:${t.dim};--g-border:${t.border};--g-accent:${t.accent}">
+      <div class="g-win"><div class="g-bar"><i></i><i></i><i></i><span>${t.name}</span></div>
+        <pre><span style="color:${a[4]}">~/regolith</span> <span style="color:${a[5]}">main</span> <span style="color:${a[8]}">❯</span> make test
+<span style="color:${a[2]}">✓</span> 47 passed  <span style="color:${a[1]}">✗</span> 1 failed
+<span style="color:${a[3]}">warn</span> <span style="color:${a[6]}">SmbPath.kt:41</span></pre>
+        <div class="g-ansi">${a.map(c => `<i style="background:${c}"></i>`).join("")}</div></div>
+      <div class="g-meta"><div><b>${t.name}</b><small>${t.tag}</small></div>
+        <div class="g-acts"><button class="copy" data-preview="${k}">Preview</button><a class="copy" href="themes/${k}.json" download>Download</a></div></div>
+    </article>`;
+  }).join("");
+  $("gallery").addEventListener("click", e => {
+    const b = e.target.closest("[data-preview]"); if (!b) return;
+    state.theme = b.dataset.preview; render();
+    $("h-preview").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+}
+
+async function boot() {
+  try {
+    await Promise.all(MANIFEST.map(async m => {
+      const r = await fetch(`themes/${m.slug}.json`);
+      if (!r.ok) throw new Error(m.slug);
+      const text = await r.text(), j = JSON.parse(text);
+      RAW[m.slug] = text.trimEnd();
+      THEMES[m.slug] = Object.assign({ name: m.name, tag: m.tag, background: j.background, foreground: j.foreground,
+        selection: j.selection, cursor: j.cursor || j.foreground, ansi: j.ansi }, j.colors);
+    }));
+  } catch (e) {
+    $("loadError").hidden = false; return;
+  }
+  buildChips(); buildGallery(); render();
+}
+boot();
+</script>
+</body>
+</html>
