@@ -57,14 +57,11 @@ h2 { font: 400 17px/1.3 var(--display); color: var(--ink); margin: 0; letter-spa
 .stage.flat { background: #070707; }
 .stage.flat::before { display: none; }
 .scroller { overflow-x: auto; position: relative; }
-.herdr { --pane-radius: 10px; --pane-gap: 8px; --pad-x: 14px; --pad-y: 12px; --lh: 1.35; --fs: 13px; --fw: 500; --opacity: 1;
+.herdr { --pane-radius: 10px; --pane-gap: 8px; --pad-x: 14px; --pad-y: 12px; --lh: 1.35; --fs: 13px; --fw: 500;
   --tfont: var(--mono); --bw: 1px; --focus: var(--accent);
   position: relative; min-width: 980px; height: 600px; display: grid; grid-template-columns: 236px 1fr; border-radius: 12px; overflow: hidden;
   background: var(--canvas); color: var(--foreground); font: 13px/1.4 var(--text); border: 1px solid var(--border);
   box-shadow: 0 30px 80px rgba(0,0,0,.6); transition: background .25s, color .25s; }
-.herdr.glass { background: color-mix(in srgb, var(--canvas) 30%, transparent); backdrop-filter: blur(26px) saturate(1.3); -webkit-backdrop-filter: blur(26px) saturate(1.3); }
-.herdr.glass .side { background: color-mix(in srgb, var(--chrome) 55%, transparent); }
-.herdr.glass .tabs { background: transparent; }
 .side { background: var(--chrome); border-right: 1px solid var(--border); display: grid; grid-template-rows: 46px 1fr 1fr 64px; min-height: 0; }
 .brand { display: flex; align-items: center; gap: 8px; padding: 0 14px 0 76px; position: relative; }
 .lights { position: absolute; left: 14px; top: 17px; display: flex; gap: 8px; }
@@ -97,7 +94,7 @@ h2 { font: 400 17px/1.3 var(--display); color: var(--ink); margin: 0; letter-spa
 .tabs .spacer { flex: 1; }
 .kbd { font: 11px/1 var(--mono); color: var(--dim); border: 1px solid var(--border); padding: 4px 6px; border-radius: 5px; }
 .body { padding: 8px; display: grid; grid-template-columns: 1.25fr 1fr; grid-template-rows: 1fr 1fr; gap: var(--pane-gap); min-height: 0; }
-.pane { background: color-mix(in srgb, var(--background) calc(var(--opacity) * 100%), transparent); border-radius: var(--pane-radius);
+.pane { background: var(--background); border-radius: var(--pane-radius);
   border: var(--bw) solid var(--border); display: grid; grid-template-rows: 30px 1fr; min-height: 0; overflow: hidden; position: relative; }
 .pane.big { grid-row: span 2; }
 .pane.focus { border-color: var(--focus); }
@@ -371,12 +368,6 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
         <div class="seg" id="kHead"><button data-v="top" aria-pressed="true">top</button><button data-v="bottom">bottom</button><button data-v="hover">on hover</button></div></div>
       <p class="note">The header is the shipped <code>pane</code> mod: one copy per pane, reading title, folder, branch and agent status. On hover it draws over the terminal, so the terminal never resizes.</p>
     </div>
-    <div class="card">
-      <h3>Glass <code>root</code></h3>
-      <label class="switch" for="kBlur">Window blur <span class="key" style="margin-left:auto;margin-right:8px">window_blur</span><input type="checkbox" id="kBlur"></label>
-      <div class="ctl"><label for="kOp">Terminal opacity <output id="oOp"></output></label><input type="range" id="kOp" min="0.4" max="1" step="0.05" value="1"><span class="key">terminal_opacity · 0–1</span></div>
-      <p class="note">With blur on, Herdr wants a transparent <code>canvas</code> and a translucent <code>chrome</code>. The theme files already carry both, so blur works with any of them. The red horizon here stands in for your desktop.</p>
-    </div>
   </div>
 </section>
 
@@ -429,7 +420,7 @@ SmbPathTest &gt; escapesBackslash <span class="c1"><b>FAILED</b></span>
         <div><b>Add the themes</b>
           <div class="cmd"><pre id="pInstall">curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh</pre><button class="copy" data-copy="pInstall">Copy</button></div>
           <p class="note">Or download any file from the gallery and put it in <code>~/.config/herdr-app/themes/</code>. Herdr picks new themes up without a restart.</p>
-          <p class="note">For the full look, add <code>--glass</code>: <code>… | sh -s -- --glass</code> also installs the Regolith Glass layout, with blur, no focus ring and a Regolith agents list. It uses copies of seven Herdr panels, which won't receive Herdr's future updates on their own; the README explains.</p></div>
+          <p class="note">For the full look, add <code>--glass</code>: <code>… | sh -s -- --glass</code> also installs the Regolith Glass layout, with no focus ring and a Regolith agents list. It uses copies of seven Herdr panels, which won't receive Herdr's future updates on their own; the README explains.</p></div>
       </div>
       <div class="step">
         <span class="num">2</span>
@@ -503,7 +494,7 @@ const THEMES = {}, RAW = {};
 const SLOTS = Object.keys(SLOT_INFO);
 
 const state = { theme: "regolith", font: "JetBrains Mono", size: 13, lh: 1.35, weight: 500, radius: 10, gap: 8, pad: 14,
-  focus: "accent", head: "top", blur: false, op: 1 };
+  focus: "accent", head: "top" };
 try { const s = JSON.parse(localStorage.getItem("herdr-regolith") || "null"); if (s && ORDER.includes(s.theme)) Object.assign(state, s); } catch (e) {}
 
 const $ = id => document.getElementById(id);
@@ -533,19 +524,17 @@ function render() {
   herdr.style.setProperty("--pad-x", state.pad + "px");
   herdr.style.setProperty("--pad-y", Math.round(state.pad * 0.85) + "px");
   herdr.style.setProperty("--focus", `var(--${state.focus})`);
-  herdr.style.setProperty("--opacity", state.op);
   herdr.querySelector(".body").style.gap = state.gap + "px";
-  herdr.classList.toggle("glass", state.blur);
   herdr.classList.toggle("hb", state.head === "bottom");
   herdr.classList.toggle("hh", state.head === "hover");
-  $("stage").classList.toggle("flat", !state.blur && state.op === 1);
+  $("stage").classList.add("flat");
   document.querySelectorAll("#themeChips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.k === state.theme));
 
   // controls reflect state
   $("kFont").value = state.font; $("kSize").value = state.size; $("kLh").value = state.lh; $("kRadius").value = state.radius;
-  $("kGap").value = state.gap; $("kPad").value = state.pad; $("kBlur").checked = state.blur; $("kOp").value = state.op;
+  $("kGap").value = state.gap; $("kPad").value = state.pad;
   $("oSize").textContent = state.size + " px"; $("oLh").textContent = (+state.lh).toFixed(2); $("oRadius").textContent = state.radius + " px";
-  $("oGap").textContent = state.gap + " px"; $("oPad").textContent = state.pad + " px"; $("oOp").textContent = (+state.op).toFixed(2);
+  $("oGap").textContent = state.gap + " px"; $("oPad").textContent = state.pad + " px";
   [["kWeight","weight"],["kFocus","focus"],["kHead","head"]].forEach(([id, key]) =>
     $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v) === String(state[key]))));
 
@@ -558,12 +547,8 @@ function render() {
   $("fThemeName").textContent = `themes/${name}.json`;
   $("pTheme").textContent = RAW[name];
   const root = { theme: name };
-  if (state.blur) {
-    root.window_blur = true;
-  }
   Object.assign(root, { font: state.font, font_size: +state.size, font_weight: +state.weight, ui_font: "Space Grotesk",
     terminal_line_height: +(+state.lh).toFixed(2), terminal_padding: [+state.pad, Math.round(state.pad * 0.85)] });
-  if (+state.op < 1) root.terminal_opacity = +(+state.op).toFixed(2);
   const pane = { gap: +state.gap, radius: +state.radius, background: "background", lone: true,
     border: { width: 1, color: "border" },
     focus: { width: 1, color: state.focus },
@@ -584,8 +569,7 @@ function lum(hex) {
 
 // inputs
 const bind = (id, key, num) => $(id).addEventListener("input", e => { state[key] = num ? +e.target.value : e.target.value; render(); });
-bind("kFont","font"); bind("kSize","size",1); bind("kLh","lh",1); bind("kRadius","radius",1); bind("kGap","gap",1); bind("kPad","pad",1); bind("kOp","op",1);
-$("kBlur").addEventListener("change", e => { state.blur = e.target.checked; render(); });
+bind("kFont","font"); bind("kSize","size",1); bind("kLh","lh",1); bind("kRadius","radius",1); bind("kGap","gap",1); bind("kPad","pad",1);
 [["kWeight","weight"],["kFocus","focus"],["kHead","head"]].forEach(([id, key]) =>
   $(id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state[key] = b.dataset.v; render(); }));
 
@@ -633,8 +617,6 @@ async function boot() {
       RAW[m.slug] = text.trimEnd();
       THEMES[m.slug] = Object.assign({ name: m.name, tag: m.tag, background: j.background, foreground: j.foreground,
         selection: j.selection, cursor: j.cursor || j.foreground, ansi: j.ansi }, j.colors);
-      // The files carry glass alpha on canvas and chrome; the preview draws the solid color.
-      for (const k of Object.keys(THEMES[m.slug])) { const v = THEMES[m.slug][k]; if (typeof v === "string" && /^#[0-9a-f]{8}$/i.test(v)) THEMES[m.slug][k] = v.slice(0, 7); }
     }));
   } catch (e) {
     $("loadError").hidden = false; return;

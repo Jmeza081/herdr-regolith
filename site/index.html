@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Regolith for Herdr</title>
-<meta name="description" content="Six themes, a frosted glass layout and a calmer agents list for the Herdr terminal app. One command to install, one to undo.">
+<meta name="description" content="Six themes, a Regolith layout and a calmer agents list for the Herdr terminal app. One command to install, one to undo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -141,9 +141,6 @@ kbd { border: 1px solid var(--raised); border-bottom-width: 2px; border-radius: 
   .w-body .w-pane + .w-pane, .w-tab:nth-child(n+3), .w-row .p, .w-row .bar, .w-row .wd { display: none; }
   .w-term { font-size: 9.5px; }
 }
-.win.glass { background: color-mix(in srgb, var(--canvas) 45%, transparent); backdrop-filter: blur(22px) saturate(1.3); -webkit-backdrop-filter: blur(22px) saturate(1.3); }
-.win.glass .w-side, .win.glass .w-tabs { background: color-mix(in srgb, var(--chrome) 55%, transparent); }
-.win.glass .w-pane { background: color-mix(in srgb, var(--background) 90%, transparent); }
 .w-pane.focus { border-color: var(--accent); }
 .w-row.flat { border-color: transparent; }
 .frame { transition: box-shadow .3s; }
@@ -298,7 +295,7 @@ body.dock-look .nav-tools [data-part="look"], body.dock-theme .nav-tools [data-p
     <div class="hero-copy">
       <span class="eyebrow">Themes for the Herdr terminal app</span>
       <h1 style="margin-top:16px">Regolith, for your <span>terminals</span>.</h1>
-      <p class="lede">Six calm themes, a frosted glass layout and a quieter agents list. One command to install it, one to take it back out.</p>
+      <p class="lede">Six calm themes, a Regolith layout and a quieter agents list. One command to install it, one to take it back out.</p>
 
       <div class="install" id="install" data-install>
         <div class="choice" role="group" aria-label="What to install">
@@ -351,7 +348,7 @@ with the Regolith theme.</div></li>
   <div class="wrap" style="display:grid;gap:36px">
     <div class="sec-head"><span class="eyebrow">The full look</span><h2 id="h-what">What Regolith Glass changes</h2><p>The themes set colors. The full look also reshapes a few of Herdr's panels to match.</p></div>
     <div class="gets">
-      <div class="get"><span class="gi" data-i="glass"></span><h3>Frosted glass</h3><p>Your desktop blurs softly behind the sidebar, the tabs and the terminals.</p></div>
+      <div class="get"><span class="gi" data-i="uplink"></span><h3>A Remote badge</h3><p>Claude Code panes with Remote Control on get a small dish, so you know which ones your phone can reach.</p></div>
       <div class="get"><span class="gi"><span class="breath"><i></i></span></span><h3>A dot that breathes</h3><p>Working agents get a slow green pulse in place of a spinning ring, everywhere.</p></div>
       <div class="get"><span class="gi" data-i="moon-half"></span><h3>A moon for every space</h3><p>Spaces get a moon phase on the theme's red, instead of a letter.</p></div>
       <div class="get"><span class="gi" data-i="list"></span><h3>A calmer agents list</h3><p>Status first, then the name and the AI, <code>regolith | Claude</code>, and a word for what it's doing.</p></div>
@@ -372,8 +369,7 @@ rm themes/regolith*.json themes/mono.json themes/paper-cobalt.json
 rm layouts/regolith-glass.json
 rm -r mods/regolith-*</pre></div></details>
       <details><summary>Will it keep up with Herdr updates?</summary><div class="ans"><p>The themes will. The full look uses copies of seven Herdr panels, and copies don't get Herdr's updates on their own. Run the installer again after this project updates. If an update ever breaks something, switch to Herdr's own layout; the themes keep working there.</p></div></details>
-      <details><summary>I don't see the glass blur.</summary><div class="ans"><p>Quit Herdr and open it again; your terminals keep running while it's closed. The blur needs Herdr 0.1.16 or newer and is drawn by macOS, so how strong it looks depends on what's behind the window.</p></div></details>
-      <details><summary>Can I change the fonts, corners or blur?</summary><div class="ans"><p>Yes. The <a href="customize.html">customizer</a> lets you turn the knobs on a live window and copy the settings for your own copy of the layout.</p></div></details>
+      <details><summary>Can I change the fonts or corners?</summary><div class="ans"><p>Yes. The <a href="customize.html">customizer</a> lets you turn the knobs on a live window and copy the settings for your own copy of the layout.</p></div></details>
       <details><summary>Can I use the themes with my own layout?</summary><div class="ans"><p>Yes. Pick "Just the themes" above, then choose one in Settings, <kbd>⌘</kbd> <kbd>,</kbd> › Look. They work in every Herdr layout.</p></div></details>
     </div>
   </div>
@@ -430,7 +426,7 @@ const G = {
   "moon-half": `<circle cx="12" cy="12" r="7.5"/><path d="M12 4.5a7.5 7.5 0 0 1 0 15z" fill="currentColor"/>`,
   "moon-crescent": `<circle cx="12" cy="12" r="7.5"/><path d="M12 4.5a7.5 7.5 0 0 1 0 15 4.6 7.5 0 0 0 0-15z" fill="currentColor"/>`,
   "moon-full": `<circle cx="12" cy="12" r="7.5" fill="currentColor"/>`,
-  glass: `<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M7 15 13 9M10.5 16.5 16.5 10.5"/>`,
+  uplink: `<path d="M4.5 12.5a7.5 7.5 0 0 0 7 7z"/><path d="M8 16 5 21h8"/><path d="m8 16 3.5-3.5"/><path d="M12.5 8.5a3 3 0 0 1 3 3"/><path d="M12.5 4.5a7 7 0 0 1 7 7"/>`,
   list: `<circle cx="5.5" cy="7" r="1.6" fill="currentColor"/><circle cx="5.5" cy="12" r="1.6"/><circle cx="5.5" cy="17" r="1.6"/><path d="M10 7h10M10 12h7M10 17h8"/>`,
   noring: `<rect x="4" y="5" width="16" height="14" rx="2.5" stroke-dasharray="2.5 2.5"/><path d="M8 10h8M8 14h5"/>`,
   check: `<path d="m5 12.5 4.5 4.5L19 7"/>`
@@ -470,7 +466,6 @@ function renderWindow() {
   const vars = { canvas: t.canvas, chrome: t.chrome, surface: t.surface, raised: t.raised, selected: t.selected, border: t.border, input: t.input,
     foreground: t.foreground, muted: t.muted, dim: t.dim, accent: t.accent, "accent-fg": t.accent_foreground, working: t.working, background: t.background };
   Object.entries(vars).forEach(([k, v]) => w.style.setProperty("--" + k, v));
-  w.classList.toggle("glass", full);
   const a = t.ansi;
   const ic = (reg, stock) => full ? svg(reg, "w-ic") : sicon(stock);
   const space = (i, name, moon) => full
@@ -529,7 +524,7 @@ function renderWindow() {
   </div>`;
   $$("#chips .chip, #swatches button").forEach(c => c.setAttribute("aria-pressed", c.dataset.k === theme));
   $$(".theme").forEach(c => c.classList.toggle("on", c.dataset.k === theme));
-  $("#cap").textContent = full ? `${META[theme][0]} with the full look: glass, moons and breathing dots.` : `${META[theme][0]} on Herdr's own layout. Just the colors change.`;
+  $("#cap").textContent = full ? `${META[theme][0]} with the full look: moons, breathing dots and a calmer agents list.` : `${META[theme][0]} on Herdr's own layout. Just the colors change.`;
   $("#win").setAttribute("aria-label", full ? `Herdr in ${META[theme][0]} with the Regolith Glass layout` : `Herdr in ${META[theme][0]} on its own layout`);
 }
 

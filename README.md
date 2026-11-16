@@ -2,7 +2,7 @@
 
 Six themes for [Herdr](https://herdr.dev), drawn from the Regolith design system: a black ground, quiet greys, and one red for the thing that needs you.
 
-**[See them live →](https://jmeza081.github.io/herdr-regolith/)** Every theme in a working Herdr window, with knobs for fonts, pane frames and glass.
+**[See them live →](https://jmeza081.github.io/herdr-regolith/)** Every theme in a working Herdr window, with knobs for fonts and pane frames.
 
 ![The showcase site: a Herdr window in the Regolith theme](site/images/showcase.png)
 
@@ -66,7 +66,6 @@ herdr-app do app.theme --name regolith
 
 Themes only set colors. **Regolith Glass** is a layout that adds the rest of the Regolith look, and it works with any of the six themes:
 
-- The window blurs your desktop behind it. The sidebar, tab bar and terminals are see-through (terminals at 90%), so the blur shows everywhere except the Files and Changes panels.
 - The focused pane has no red outline.
 - **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. Everywhere Herdr showed a spinning ring for a working agent (agents list, tabs, pane headers, ⌘P picker) there's a green dot that breathes instead. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
 - **Remote Control badge:** a Claude Code session with Remote Control on shows a small dish in the agents list and a "Remote" tag in its pane header, so you can tell at a glance which panes you can reach from your phone. It checks every few seconds and only sees sessions on this computer.
@@ -88,7 +87,7 @@ The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, chan
 
 ### Your own layout
 
-To change fonts, pane corners, gaps or blur yourself, copy a layout first; Herdr replaces its built-in layouts every time it starts:
+To change fonts, pane corners or gaps yourself, copy a layout first; Herdr replaces its built-in layouts every time it starts:
 
 ```sh
 herdr-app do layout.clone '{"name":"regolith-glass","as":"my-layout"}'
@@ -123,9 +122,7 @@ Every theme is plain JSON:
 }
 ```
 
-Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those, and anything under `colors` overrides it. In these files `canvas` and `chrome` end in alpha (`E6` and `8C`) so the blur shows through in Regolith Glass; layouts without blur still look solid.
-
-If you build your own glass layout, know that Herdr adds the opacity of every layer at a spot together. Regolith Glass therefore clears the theme's `background` in the layout's `colors`, sets `terminal_opacity` to 0, and lets one layer do the tinting: the pane frame's `canvas` (90%) behind terminals and `chrome` (55%) in the sidebar and bars. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
+Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those, and anything under `colors` overrides it. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
 
 Don't name a theme `graphite`, `ink`, `moss` or `paper`. Herdr ships themes with those names, and yours would be hidden.
 

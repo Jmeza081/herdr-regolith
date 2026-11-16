@@ -8,7 +8,7 @@ shutil.copytree(os.path.join(root, "themes"), os.path.join(out, "themes"))
 themes = {}
 for f in sorted(glob.glob(os.path.join(root, "themes", "*.json"))):
     d = json.load(open(f))
-    c = {k: v[:7] for k, v in d["colors"].items()}  # the preview draws solid colors; glass alpha is for Herdr
+    c = dict(d["colors"])
     c.update(background=d["background"], foreground=d["foreground"], ansi=d["ansi"])
     themes[os.path.basename(f)[:-5]] = c
 p = os.path.join(out, "index.html")

@@ -69,7 +69,7 @@
       "min": 44,
       "max": 480,
       "resizable": false,
-      "background": "#00000000"
+      "background": "chrome"
     },
     {
       "id": "work",
@@ -115,7 +115,7 @@
                   "radius": 10,
                   "gap": 8,
                   "lone": true,
-                  "background": "canvas"
+                  "background": "background"
                 }
               }
             },
@@ -132,18 +132,14 @@
                       "type": "block",
                       "content": {
                         "mod": "files"
-                      },
-                      "background": "canvas",
-                      "radius": 10
+                      }
                     },
                     {
                       "id": "changes",
                       "type": "block",
                       "content": {
                         "mod": "changes"
-                      },
-                      "background": "canvas",
-                      "radius": 10
+                      }
                     }
                   ],
                   "active": "files"
@@ -174,7 +170,7 @@
       "resizable": false
     }
   ],
-  "background": "#00000000",
+  "background": "canvas",
   "terminal_padding": [
     14,
     12
@@ -191,10 +187,5 @@
   "theme": {
     "dark": "regolith",
     "light": "regolith-dust"
-  },
-  "window_blur": true,
-  "terminal_opacity": 0,
-  "colors": {
-    "background": "#0F0F0F00"
   }
 }
