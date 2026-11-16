@@ -31,7 +31,7 @@ function spaceColors() {
 function spaceColor(t, p) {
   // Regolith: the theme's own colors, as in the spaces list; "~" is the theme's green there too.
   const c = spaceColors()[p.id] ?? PROJECT_COLORS[0];
-  return c.startsWith("#") ? c : (t[c] ?? MARK[c]);
+  return c.startsWith("#") ? c : t.accent;
 }
 // Relative luminance of #rrggbb, 0..1: dark ink on light avatars.
 function inkOn(hex) {
@@ -173,7 +173,7 @@ export default class Picker extends View {
           .text_size(11)
           .font_semibold()
           .text_color(t.dim)
-          .child(h_flex().size(18).rounded(5).bg(spaceColor(t, r.w)).items_center().justify_center().text_size(10.5).font_bold().text_color(inkOn(spaceColor(t, r.w))).child([...r.w.name][0]?.toUpperCase() ?? "?"))
+          .child(h_flex().size(18).rounded(5).bg(spaceColor(t, r.w)).items_center().justify_center().text_size(10.5).font_bold().text_color(spaceColor(t, r.w) === t.accent ? t.accent_foreground : inkOn(spaceColor(t, r.w))).child([...r.w.name][0]?.toUpperCase() ?? "?"))
           .child(r.w.name);
       }
       if (r.kind === "earlier") {

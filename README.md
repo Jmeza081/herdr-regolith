@@ -66,10 +66,10 @@ herdr-app do app.theme --name regolith
 
 Themes only set colors. **Regolith Glass** is a layout that adds the rest of the Regolith look, and it works with any of the six themes:
 
-- The window blurs your desktop behind the sidebar and the space around the panes. Terminals are 80% opaque.
+- The window blurs your desktop behind it. The sidebar, tab bar and terminals are see-through (terminals at 80%), so the blur shows everywhere except the Files and Changes panels.
 - The focused pane has no red outline.
-- **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. A working agent shows a green dot that breathes instead of a spinning ring. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
-- **Space icons** take the theme's own colors, in the sidebar and in the ⌘P picker.
+- **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. Everywhere Herdr showed a spinning ring for a working agent (agents list, tabs, pane headers, ⌘P picker) there's a green dot that breathes instead. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
+- **Space icons** use the theme's accent, Regolith red in the Regolith themes, in the sidebar and in the ⌘P picker. A color you pick for a space yourself still wins.
 
 Install the themes and the layout together:
 
@@ -81,7 +81,7 @@ Then pick **Regolith Glass** under **Layout** in Settings › Look, or run `herd
 
 The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, change `"cmd-p"` in `~/.config/herdr-app/keys.json` to `"mod.open:regolith-picker"`. The search button in the sidebar already opens it.
 
-> **Heads-up: these panels won't update on their own.** Herdr doesn't let you edit its built-in panels, so Regolith Glass uses copies of four of them: the agents list, the spaces list, the ⌘P picker and the sidebar's top and bottom bars (`regolith-agents`, `regolith-spaces`, `regolith-picker`, `regolith-chrome`). Herdr updates its own panels, never copies. When Herdr improves one of those panels, you'll keep the older version until this repo is updated and you run the installer again. If a Herdr update ever breaks a copy, switch back to the **Herdr** layout; the themes keep working there.
+> **Heads-up: these panels won't update on their own.** Herdr doesn't let you edit its built-in panels, so Regolith Glass uses copies of seven of them: the agents list, the spaces list, the ⌘P picker, the sidebar's top and bottom bars, the tab bar, the pane header and the Add machine dialog (`regolith-agents`, `regolith-spaces`, `regolith-picker`, `regolith-chrome`, `regolith-tabs`, `regolith-pane`, `regolith-machine-add`). Herdr updates its own panels, never copies. When Herdr improves one of those panels, you'll keep the older version until this repo is updated and you run the installer again. If a Herdr update ever breaks a copy, switch back to the **Herdr** layout; the themes keep working there.
 
 ### Your own layout
 
@@ -100,7 +100,7 @@ cd ~/.config/herdr-app
 rm themes/regolith.json themes/regolith-dust.json themes/regolith-orbit.json themes/regolith-moss.json themes/mono.json themes/paper-cobalt.json
 # if you installed Regolith Glass, switch to another layout first, then:
 rm layouts/regolith-glass.json
-rm -r mods/regolith-agents mods/regolith-spaces mods/regolith-picker mods/regolith-chrome
+rm -r mods/regolith-agents mods/regolith-spaces mods/regolith-picker mods/regolith-chrome mods/regolith-tabs mods/regolith-pane mods/regolith-machine-add
 ```
 
 Then pick another theme in Settings.

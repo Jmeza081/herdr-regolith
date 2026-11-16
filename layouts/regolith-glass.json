@@ -68,7 +68,7 @@
       },
       "min": 44,
       "max": 480,
-      "background": "chrome",
+      "background": "canvas",
       "resizable": false
     },
     {
@@ -79,7 +79,7 @@
           "id": "tabs",
           "type": "block",
           "content": {
-            "mod": "tabs"
+            "mod": "regolith-tabs"
           },
           "size": {
             "px": 42
@@ -98,13 +98,13 @@
                 "pane": {
                   "header": {
                     "content": {
-                      "mod": "pane"
+                      "mod": "regolith-pane"
                     },
                     "reveal": "always",
                     "height": 30,
                     "position": "top"
                   },
-                  "background": "background",
+                  "background": "canvas",
                   "border": {
                     "width": 1,
                     "color": "border"

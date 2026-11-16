@@ -384,7 +384,7 @@ export default class Spaces extends View {
         })
         .when(machine?.keeps_running_after_logout === false, el => el.child(div().id(`machine-logout-${m}`)
           .flex_none().text_color(t.blocked).tooltip("Agents stop when you disconnect. Click for the fix.")
-          .on_click((_e, cx) => { cx.stop_propagation(); openOverlay({ mod: "machine-add", kind: "dialog", width: 560 }); }).child("⚠")))
+          .on_click((_e, cx) => { cx.stop_propagation(); openOverlay({ mod: "regolith-machine-add", kind: "dialog", width: 560 }); }).child("⚠")))
         .when(!collapsed, el => el.child(icon))
         .when(collapsed, el => el.child(div().relative().flex_none().child(icon).when(Boolean(m), el => el.child(badge))))
         .when(!collapsed, el => el.child(div().flex_1().truncate().child(m ?? "This computer"))
@@ -454,8 +454,9 @@ export default class Spaces extends View {
     const colors = shared("space.colors") ?? {};
     // Regolith: avatars use the theme's own colors, green by default, with ink that reads on them.
     const color = colors[w.id] ?? "ansi2";
-    const fill = color.startsWith("#") ? color : (t[color] ?? MARK[color]);
-    const ink = lum(fill) > 0.5 ? "#0A0A0A" : "#FFFFFF";
+    // Regolith: every space icon is the theme's accent (red in the Regolith themes), unless someone picked a color.
+    const fill = color.startsWith("#") ? color : t.accent;
+    const ink = color.startsWith("#") ? (lum(fill) > 0.5 ? "#0A0A0A" : "#FFFFFF") : t.accent_foreground;
     return v_flex()
       .relative()
       .id(`space-${w.id}`)
