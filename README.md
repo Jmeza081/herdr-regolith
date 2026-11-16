@@ -77,7 +77,7 @@ Install the themes and the layout together:
 curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --glass
 ```
 
-Then pick **Regolith Glass** under **Layout** in Settings › Look, or run `herdr-app do layout.switch --name regolith-glass`.
+If Herdr is open, the installer switches it to Regolith Glass with the Regolith theme. Otherwise pick **Regolith Glass** under **Layout** in Settings › Look. Any of the six themes works on top of it.
 
 The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, change `"cmd-p"` in `~/.config/herdr-app/keys.json` to `"mod.open:regolith-picker"`. The search button in the sidebar already opens it.
 

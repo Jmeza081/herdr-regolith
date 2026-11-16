@@ -24,7 +24,13 @@ if [ "${1:-}" = "--glass" ]; then
     cp -R "$mod". "$HOME_DIR/mods/$name/"
   done
   echo "Installed the Regolith Glass layout and its panels."
-  echo "Switch to it in Settings (Cmd+,) > Look > Layout, or run: herdr-app do layout.switch --name regolith-glass"
+  # If Herdr is open, switch to the layout and the Regolith theme now.
+  if command -v herdr-app >/dev/null 2>&1 && herdr-app do layout.switch --name regolith-glass >/dev/null 2>&1; then
+    herdr-app do app.theme --name regolith >/dev/null 2>&1 || true
+    echo "Switched Herdr to Regolith Glass with the Regolith theme. Pick another theme any time in Settings (Cmd+,) > Look."
+  else
+    echo "Open Herdr, then pick Regolith Glass in Settings (Cmd+,) > Look > Layout, or run: herdr-app do layout.switch --name regolith-glass"
+  fi
 else
   echo "Open Herdr's Settings (Cmd+,) > Look and pick a theme."
 fi
