@@ -122,7 +122,9 @@ Every theme is plain JSON:
 }
 ```
 
-Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those, and anything under `colors` overrides it. In these files `canvas` and `chrome` end in alpha (`00` and `8C`) so the blur shows through in Regolith Glass; layouts without blur still look solid. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
+Only `background`, `foreground`, `selection` and `ansi` are required; Herdr works out the panel colors from those, and anything under `colors` overrides it. In these files `canvas` and `chrome` end in alpha (`CC` and `8C`) so the blur shows through in Regolith Glass; layouts without blur still look solid.
+
+If you build your own glass layout, know that Herdr adds the opacity of every layer at a spot together. Regolith Glass therefore clears the theme's `background` in the layout's `colors`, sets `terminal_opacity` to 0, and lets one layer do the tinting: the pane frame's `canvas` (80%) behind terminals and `chrome` (55%) in the sidebar and bars. Copy one of these files, rename it, and edit. The [showcase site](https://jmeza081.github.io/herdr-regolith/#h-slots) lists every color name and shows where it paints.
 
 Don't name a theme `graphite`, `ink`, `moss` or `paper`. Herdr ships themes with those names, and yours would be hidden.
 

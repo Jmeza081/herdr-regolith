@@ -5,7 +5,7 @@
   "cursor": "#FFFFFF",
   "ansi": ["#1A1A1A", "#E11B17", "#BDBDBD", "#D6D6D6", "#9E9E9E", "#B0B0B0", "#C8C8C8", "#8A8A8A", "#444444", "#FF4A3D", "#E0E0E0", "#EEEEEE", "#C2C2C2", "#D0D0D0", "#E6E6E6", "#FFFFFF"],
   "colors": {
-    "canvas": "#00000000",
+    "canvas": "#000000CC",
     "chrome": "#0000008C",
     "surface": "#121212",
     "popover": "#0A0A0A",
