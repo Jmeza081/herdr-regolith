@@ -15,6 +15,14 @@ const MARK = { ansi6: "#22a99a", ansi3: "#e3814f", ansi4: "#5b8def", ansi5: "#8b
 // the theme color fewest spaces use, once; every mod does the same in the
 // same order, so they agree, and adding or renaming spaces moves nothing.
 const PROJECT_COLORS = ["ansi2", "ansi4", "ansi3", "ansi5", "ansi6", "ansi1"];
+
+// Regolith: each space gets a moon phase, kept for its id, in place of its first letter.
+const MOONS = ["moon-half", "moon-crescent", "moon-full", "moon-gibbous", "moon-new", "moon-ringed"];
+function moonOf(id) {
+  let h = 0;
+  for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return `mods/regolith-chrome/moons/${MOONS[h % MOONS.length]}.svg`;
+}
 function spaceColors() {
   const ids = new Set(spaces().map((p) => p.id));
   const kept = Object.fromEntries(Object.entries(shared("space.colors") ?? {}).filter(([id]) => ids.has(id)));
@@ -173,7 +181,7 @@ export default class Picker extends View {
           .text_size(11)
           .font_semibold()
           .text_color(t.dim)
-          .child(h_flex().size(18).rounded(5).bg(spaceColor(t, r.w)).items_center().justify_center().text_size(10.5).font_bold().text_color(spaceColor(t, r.w) === t.accent ? t.accent_foreground : inkOn(spaceColor(t, r.w))).child([...r.w.name][0]?.toUpperCase() ?? "?"))
+          .child(h_flex().size(18).rounded(5).bg(spaceColor(t, r.w)).items_center().justify_center().child(svg(moonOf(r.w.id)).size(12).text_color(spaceColor(t, r.w) === t.accent ? t.accent_foreground : inkOn(spaceColor(t, r.w)))))
           .child(r.w.name);
       }
       if (r.kind === "earlier") {
@@ -259,7 +267,7 @@ export default class Picker extends View {
       .child(h_flex().items_center().child(div().flex_1().text_size(15).font_semibold().text_color(t.foreground).child("Go to…")).child(div().id("picker-esc").px(6).py(2).rounded(5).text_size(11).text_color(t.dim).cursor_pointer().hover((s) => s.bg(t.hover).text_color(t.foreground)).on_click(() => this.close()).child("Esc")))
       .child(
         h_flex().h(36).flex_none().px(10).gap(8).items_center().rounded(9).border_1().border_color(t.accent).bg(t.background)
-          .child(svg("mods/workspace-chrome/search.svg").size(15).text_color(t.dim))
+          .child(svg("mods/regolith-chrome/search.svg").size(15).text_color(t.dim))
           .child(Input.new(this.input).flex_1().h_full().text_size(12.8).text_color(t.foreground)),
       )
       .child(

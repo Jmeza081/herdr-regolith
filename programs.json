@@ -1,0 +1,358 @@
+{
+  "programs": {
+    "agent": {
+      "tint": true
+    },
+    "amp": {
+      "tint": true
+    },
+    "ansible": {
+      "tint": true
+    },
+    "apt": {
+      "tint": true
+    },
+    "astro": {
+      "tint": true
+    },
+    "biome": {
+      "tint": true
+    },
+    "brew": {
+      "tint": true
+    },
+    "bun": {
+      "tint": true
+    },
+    "caddy": {
+      "tint": true
+    },
+    "cargo": {
+      "tint": true
+    },
+    "claude": {
+      "tint": true
+    },
+    "cmake": {
+      "tint": true
+    },
+    "command-code": {
+      "tint": true
+    },
+    "composer": {
+      "tint": true
+    },
+    "copilot": {
+      "tint": true
+    },
+    "curl": {
+      "tint": true
+    },
+    "cursor": {
+      "tint": true
+    },
+    "dart": {
+      "tint": true
+    },
+    "deno": {
+      "tint": true
+    },
+    "django-admin": {
+      "tint": true
+    },
+    "dnf": {
+      "tint": true
+    },
+    "docker": {
+      "tint": true
+    },
+    "dotnet": {
+      "tint": true
+    },
+    "dsh-tui": {
+      "tint": true
+    },
+    "electron": {
+      "tint": true
+    },
+    "emacs": {
+      "tint": true
+    },
+    "erl": {
+      "tint": true
+    },
+    "esbuild": {
+      "tint": true
+    },
+    "eslint": {
+      "tint": true
+    },
+    "expo": {
+      "tint": true
+    },
+    "fastapi": {
+      "tint": true
+    },
+    "ffmpeg": {
+      "tint": true
+    },
+    "flask": {
+      "tint": true
+    },
+    "flutter": {
+      "tint": true
+    },
+    "fly": {
+      "tint": true
+    },
+    "gcloud": {
+      "tint": true
+    },
+    "gemini": {
+      "tint": true
+    },
+    "gh": {
+      "tint": true
+    },
+    "ghci": {
+      "tint": true
+    },
+    "git": {
+      "tint": true
+    },
+    "glab": {
+      "tint": true
+    },
+    "go": {
+      "tint": true
+    },
+    "goose": {
+      "tint": true
+    },
+    "gradle": {
+      "tint": true
+    },
+    "grok": {
+      "tint": true
+    },
+    "helm": {
+      "tint": true
+    },
+    "hermes": {
+      "tint": true
+    },
+    "htop": {
+      "tint": true
+    },
+    "hx": {
+      "tint": true
+    },
+    "iex": {
+      "tint": true
+    },
+    "java": {
+      "tint": true
+    },
+    "jest": {
+      "tint": true
+    },
+    "julia": {
+      "tint": true
+    },
+    "jupyter": {
+      "tint": true
+    },
+    "kotlin": {
+      "tint": true
+    },
+    "kubectl": {
+      "tint": true
+    },
+    "lazygit": {
+      "tint": true
+    },
+    "less": {
+      "tint": true
+    },
+    "lua": {
+      "tint": true
+    },
+    "make": {
+      "tint": true
+    },
+    "mastracode": {
+      "tint": true
+    },
+    "mongosh": {
+      "tint": true
+    },
+    "muse": {
+      "tint": true
+    },
+    "mvn": {
+      "tint": true
+    },
+    "mysql": {
+      "tint": true
+    },
+    "nano": {
+      "tint": true
+    },
+    "netlify": {
+      "tint": true
+    },
+    "next": {
+      "tint": true
+    },
+    "nginx": {
+      "tint": true
+    },
+    "nix": {
+      "tint": true
+    },
+    "node": {
+      "tint": true
+    },
+    "npm": {
+      "tint": true
+    },
+    "nuxt": {
+      "tint": true
+    },
+    "nvim": {
+      "tint": true
+    },
+    "ocaml": {
+      "tint": true
+    },
+    "ollama": {
+      "tint": true
+    },
+    "omp": {
+      "tint": true
+    },
+    "opencode": {
+      "tint": true
+    },
+    "pacman": {
+      "tint": true
+    },
+    "perl": {
+      "tint": true
+    },
+    "php": {
+      "tint": true
+    },
+    "pi": {
+      "tint": true
+    },
+    "pnpm": {
+      "tint": true
+    },
+    "podman": {
+      "tint": true
+    },
+    "poetry": {
+      "tint": true
+    },
+    "prettier": {
+      "tint": true
+    },
+    "prime-agent": {
+      "tint": true
+    },
+    "prisma": {
+      "tint": true
+    },
+    "program": {
+      "tint": true
+    },
+    "psql": {
+      "tint": true
+    },
+    "pytest": {
+      "tint": true
+    },
+    "python": {
+      "tint": true
+    },
+    "qoder": {
+      "tint": true
+    },
+    "r": {
+      "tint": true
+    },
+    "redis-cli": {
+      "tint": true
+    },
+    "rg": {
+      "tint": true
+    },
+    "ruby": {
+      "tint": true
+    },
+    "ruff": {
+      "tint": true
+    },
+    "scala": {
+      "tint": true
+    },
+    "shell": {
+      "tint": true
+    },
+    "sqlite3": {
+      "tint": true
+    },
+    "ssh": {
+      "tint": true
+    },
+    "supabase": {
+      "tint": true
+    },
+    "swift": {
+      "tint": true
+    },
+    "tauri": {
+      "tint": true
+    },
+    "terraform": {
+      "tint": true
+    },
+    "tmux": {
+      "tint": true
+    },
+    "tsc": {
+      "tint": true
+    },
+    "turbo": {
+      "tint": true
+    },
+    "uv": {
+      "tint": true
+    },
+    "vercel": {
+      "tint": true
+    },
+    "vim": {
+      "tint": true
+    },
+    "vite": {
+      "tint": true
+    },
+    "vitest": {
+      "tint": true
+    },
+    "webpack": {
+      "tint": true
+    },
+    "wrangler": {
+      "tint": true
+    },
+    "yarn": {
+      "tint": true
+    },
+    "zig": {
+      "tint": true
+    }
+  }
+}

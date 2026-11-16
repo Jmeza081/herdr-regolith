@@ -10,7 +10,7 @@ import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, TextView } from "gpui-base";
 import { hc, exec, home, readTextFile, theme, props, closeOverlay } from "herdr";
 
-const I = (name) => `mods/workspace-chrome/${name}.svg`;
+const I = (name) => `mods/regolith-chrome/${name}.svg`;
 const shellArg = (target) => /^[a-z0-9_@%+=:,./-]+$/i.test(target) ? target : "'" + target.replace(/'/g, "'\\''") + "'";
 
 // An Include's files, as ssh finds them: ~ is home, a relative path is

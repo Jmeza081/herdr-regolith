@@ -23,6 +23,13 @@ if [ "${1:-}" = "--glass" ]; then
     mkdir -p "$HOME_DIR/mods/$name"
     cp -R "$mod". "$HOME_DIR/mods/$name/"
   done
+  # One-color program icons: only when there's no programs.json yet, so yours is never overwritten.
+  if [ ! -f "$HOME_DIR/programs.json" ]; then
+    cp "$SRC/programs.json" "$HOME_DIR/programs.json"
+    echo "Program icons now draw in one color."
+  else
+    echo "Kept your programs.json. For one-color program icons, merge in $SRC/programs.json by hand."
+  fi
   echo "Installed the Regolith Glass layout and its panels."
   # If Herdr is open, switch to the layout and the Regolith theme now.
   if command -v herdr-app >/dev/null 2>&1 && herdr-app do layout.switch --name regolith-glass >/dev/null 2>&1; then

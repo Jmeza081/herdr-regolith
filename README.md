@@ -69,7 +69,9 @@ Themes only set colors. **Regolith Glass** is a layout that adds the rest of the
 - The window blurs your desktop behind it. The sidebar, tab bar and terminals are see-through (terminals at 80%), so the blur shows everywhere except the Files and Changes panels.
 - The focused pane has no red outline.
 - **Agents list:** the status comes first as a dot, then the agent's name, a bar and the program (`~ · Regolith theme | Claude`), and the status as a word at the end. Everywhere Herdr showed a spinning ring for a working agent (agents list, tabs, pane headers, ⌘P picker) there's a green dot that breathes instead. Section headers are small capitals with count badges, and the agent you're looking at sits on a raised card.
-- **Space icons** use the theme's accent, Regolith red in the Regolith themes, in the sidebar and in the ⌘P picker. A color you pick for a space yourself still wins.
+- **Space icons** use the theme's accent, Regolith red in the Regolith themes, in the sidebar and in the ⌘P picker. Each space gets a moon phase instead of its first letter. A color you pick for a space yourself still wins.
+- **Icons:** search is a telescope, settings an orbit, files the Regolith strata, pin a planted flag, and so on, in the sidebar, tabs and pane headers.
+- **Program icons** (Claude, git, Docker…) draw in one color, white on dark themes and near-black on light ones, through `programs.json`. Herdr's own icon files are kept; only the six that have more than one color stay as they are. The installer adds `programs.json` only if you don't have one, and it applies in every layout.
 
 Install the themes and the layout together:
 
