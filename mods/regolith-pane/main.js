@@ -6,7 +6,7 @@
 
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { panes, props, run, theme, home, layout } from "herdr";
+import { panes, props, run, theme, home, layout, shared } from "herdr";
 
 // Match the first visible tab frame, including the active child of a stack.
 function paneFrame(node) {
@@ -81,6 +81,7 @@ export default class Pane extends View {
       .when(Boolean(pic), (el) => el.child(pic))
       .child(div().flex_none().truncate().max_w(260).font_medium().text_color(t.foreground).child(name))
       .child(div().flex_1().truncate().text_color(t.dim).child(folder(p.cwd)))
+      .when(Boolean(p.terminal) && String(shared("regolith.remote") ?? "").split(",").includes(p.terminal), el => el.child(h_flex().flex_none().gap(4).px(6).h(18).items_center().rounded(5).bg(t.hover).text_size(10.5).font_semibold().text_color(t.muted).child(svg("mods/regolith-chrome/uplink.svg").size(11)).child("Remote")))
       .when(st === "working", el => el.child(div().size(13).flex_none().relative().flex().items_center().justify_center()
         .child(div().absolute().top(0).left(0).size(13).rounded(7).bg(t.working + "47").loop("opacity", { from: 0, to: 1, period: 1400 }))
         .child(div().size(7).rounded(4).bg(t.working))))

@@ -2,7 +2,7 @@
 
 import { View, div, image, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { agents, terminals, panes, focused, spaces, run, theme, shared, setShared, setAgentOrder, openOverlay, closeOverlay, props, window, layout } from "herdr";
+import { agents, terminals, panes, focused, spaces, run, theme, shared, setShared, setAgentOrder, openOverlay, closeOverlay, props, window, layout, hc, home, readTextFile, checking } from "herdr";
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -90,6 +90,33 @@ export default class Agents extends View {
     if (!this.pendingPins.length) localStorage.removeItem("pins");
     this.migratingPins = new Set();
     cx.timer.every(30000, (cx) => cx.notify());
+    // Regolith: which Claude Code sessions have Remote Control on, for the uplink badge.
+    if (!checking()) {
+      this.scanRemote();
+      cx.timer.every(6000, () => this.scanRemote());
+    }
+  }
+
+  // Claude Code writes ~/.claude/sessions/<pid>.json; bridgeSessionId is set while
+  // Remote Control is on. Shares the terminal addresses as "regolith.remote".
+  async scanRemote() {
+    if (this.scanning) return;
+    this.scanning = true;
+    try {
+      const on = [];
+      for (const a of agents()) {
+        if (a.address.includes("/") || !String(a.program?.key ?? a.program?.name ?? "").toLowerCase().includes("claude")) continue;
+        try {
+          const r = await hc(["get", a.address, "--json"]);
+          const pid = r.code === 0 ? JSON.parse(r.stdout)?.foreground?.pid : null;
+          if (!pid) continue;
+          const text = await readTextFile(`${home()}/.claude/sessions/${pid}.json`);
+          if (text && JSON.parse(text).bridgeSessionId) on.push(a.address);
+        } catch {}
+      }
+      const next = on.sort().join(",");
+      if (next !== (shared("regolith.remote") ?? "")) setShared("regolith.remote", next);
+    } finally { this.scanning = false; }
   }
 
   // Stamps agents whose state changed. Done and idle count as one: looking at a
@@ -233,6 +260,7 @@ export default class Agents extends View {
     let list = agents();
     this.listed = new Map(list.map((a) => [a.address, a.status]));
     const all = terminals();
+    const remote = new Set(String(shared("regolith.remote") ?? "").split(",").filter(Boolean));
     this.migratePins(all);
     const shown = focused()?.agent;
     const now = Date.now();
@@ -376,6 +404,7 @@ export default class Agents extends View {
             .child(div().flex_none().w(1).h(12).bg(t.input))
             .child(div().flex_none().text_color(t.dim).child(prog[0].toUpperCase() + prog.slice(1)))))
         .when(Boolean(machine), el => el.child(div().text_size(10).text_color(t.dim).child(machine)))
+        .when(remote.has(a.address), el => el.child(div().id(`remote-${a.address}`).flex_none().text_color(t.muted).tooltip("Remote Control is on").child(svg("mods/regolith-chrome/uplink.svg").size(13))))
         .when(subs.length > 0, el => el.child(fold(a, subs)))
         .when(this.hovered === a.address, el => el.child(pin))
         .when(this.hovered !== a.address, el => el.child(div().id(`word-${a.address}`).flex_none().font_family("JetBrains Mono").text_size(10.5)
