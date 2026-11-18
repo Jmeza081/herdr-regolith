@@ -15,9 +15,18 @@ mkdir -p "$HOME_DIR/themes"
 cp "$SRC"/themes/*.json "$HOME_DIR/themes/"
 echo "Installed the themes: $(cd "$SRC/themes" && ls | sed 's/\.json$//' | tr '\n' ' ')"
 
+# The layout used to be named "regolith", like the theme. Herdr only offers a theme named
+# like a layout inside that layout, so rename our old file to free the Regolith theme.
+OLD="$HOME_DIR/layouts/regolith.json"
+NEW="$HOME_DIR/layouts/regolith-layout.json"
+if [ -f "$OLD" ] && grep -q '"regolith-chrome"' "$OLD"; then
+  if [ -f "$NEW" ]; then mv "$OLD" "$OLD.old-$(date +%s)"; else mv "$OLD" "$NEW"; fi
+  echo "Renamed the Regolith layout to regolith-layout, so the Regolith theme works in every layout."
+fi
+
 if [ "${1:-}" = "--full" ]; then
   mkdir -p "$HOME_DIR/layouts" "$HOME_DIR/mods"
-  cp "$SRC/layouts/regolith.json" "$HOME_DIR/layouts/"
+  cp "$SRC/layouts/regolith-layout.json" "$HOME_DIR/layouts/"
   for mod in "$SRC"/mods/*/; do
     name="$(basename "$mod")"
     mkdir -p "$HOME_DIR/mods/$name"
@@ -32,11 +41,11 @@ if [ "${1:-}" = "--full" ]; then
   fi
   echo "Installed the Regolith layout and its panels."
   # If Herdr is open, switch to the layout and the Regolith theme now.
-  if command -v herdr-app >/dev/null 2>&1 && herdr-app do layout.switch --name regolith >/dev/null 2>&1; then
+  if command -v herdr-app >/dev/null 2>&1 && herdr-app do layout.switch --name regolith-layout >/dev/null 2>&1; then
     herdr-app do app.theme --name regolith >/dev/null 2>&1 || true
     echo "Switched Herdr to the Regolith layout with the Regolith theme. Pick another theme any time in Settings (Cmd+,) > Look."
   else
-    echo "Open Herdr, then pick the Regolith layout in Settings (Cmd+,) > Look > Layout, or run: herdr-app do layout.switch --name regolith"
+    echo "Open Herdr, then pick Regolith Layout in Settings (Cmd+,) > Look > Layout, or run: herdr-app do layout.switch --name regolith-layout"
   fi
 else
   echo "Open Herdr's Settings (Cmd+,) > Look and pick a theme."

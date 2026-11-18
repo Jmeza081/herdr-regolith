@@ -29,7 +29,7 @@ Paste this into a terminal:
 curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh
 ```
 
-It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched. Run it again any time to update. For the full Regolith look, see [the Regolith layout](#regolith-layout-optional).
+It copies the six theme files into `~/.config/herdr-app/themes/`. Nothing else is touched, except that an older Regolith layout named `regolith` is renamed to `regolith-layout` so the Regolith theme shows in every layout. Run it again any time to update. For the full Regolith look, see [the Regolith layout](#regolith-layout-optional).
 
 ### By hand
 
@@ -79,7 +79,7 @@ Install the themes and the layout together:
 curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --full
 ```
 
-If Herdr is open, the installer switches it to the Regolith layout with the Regolith theme. Otherwise pick **Regolith** under **Layout** in Settings › Look. Any of the six themes works on top of it.
+If Herdr is open, the installer switches it to the Regolith layout with the Regolith theme. Otherwise pick **Regolith Layout** under **Layout** in Settings › Look. Any of the six themes works on top of it.
 
 The ⌘P shortcut still opens Herdr's own picker. To open the Regolith one, change `"cmd-p"` in `~/.config/herdr-app/keys.json` to `"mod.open:regolith-picker"`. The search button in the sidebar already opens it.
 
@@ -101,7 +101,7 @@ Then edit `~/.config/herdr-app/layouts/my-layout.json`. The [showcase site](http
 cd ~/.config/herdr-app
 rm themes/regolith.json themes/regolith-dust.json themes/regolith-orbit.json themes/regolith-moss.json themes/mono.json themes/paper-cobalt.json
 # if you installed the Regolith layout, switch to another layout first, then:
-rm layouts/regolith.json
+rm layouts/regolith-layout.json
 rm -r mods/regolith-agents mods/regolith-spaces mods/regolith-picker mods/regolith-chrome mods/regolith-tabs mods/regolith-pane mods/regolith-machine-add
 ```
 
