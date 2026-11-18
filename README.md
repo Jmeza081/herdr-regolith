@@ -62,6 +62,16 @@ Prefer the command line? This sets the theme for the layout you're in:
 herdr-app do app.theme --name regolith
 ```
 
+## No red outline on the focused pane (optional)
+
+Herdr's own layout outlines the focused pane in the theme's accent, which is red in the Regolith themes. A theme can't change that on its own. With Herdr open and showing its own layout, this installs the themes and sets the outline to the plain border color:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Jmeza081/herdr-regolith/main/install.sh | sh -s -- --no-ring
+```
+
+It needs `python3`. Your panel sizes and theme picks in that layout are kept, and a copy from before the first run is saved as `layouts/main.json.clicks-before-no-ring`. To bring the outline back, run `herdr-app do layout.reset --name main`, which also resets that layout's sizes and theme picks. The Regolith layout below already has no outline.
+
 ## Regolith layout (optional)
 
 Themes only set colors. The **Regolith** layout adds the rest of the Regolith look, and it works with any of the six themes:
